@@ -16,7 +16,6 @@ class UberdocGrailsPlugin {
         "test/**"
     ]
 
-    // TODO Fill in these fields
     def title = "Uber Doc Plugin" // Headline display name of the plugin
     def author = "Felipe Carvalho"
     def authorEmail = "felipe@uberall.com"
@@ -34,12 +33,12 @@ This was done on purpose, so that your app can decide on the best way to display
 '''
 
     // URL to the plugin's documentation
-    def documentation = "http://grails.org/plugin/uberdoc"
+    def documentation = "https://github.com/uberall/grails-uber-doc"
 
     // Extra (optional) plugin metadata
 
     // License: one of 'APACHE', 'GPL2', 'GPL3'
-    def license = "APACHE"
+    def license = "BSD"
 
     // Details of company behind the plugin (if there is one)
     def organization = [ name: "uberall GmbH", url: "https://uberall.com/" ]
