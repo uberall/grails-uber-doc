@@ -31,3 +31,10 @@
 
 # "temporary" build files
 /target
+
+# config files
+.classpath
+.project
+.idea
+*.iml
+.DS_Store
