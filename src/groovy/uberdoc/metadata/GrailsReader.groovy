@@ -1,5 +1,6 @@
 package uberdoc.metadata
 
+import grails.util.GrailsNameUtils
 import org.codehaus.groovy.grails.commons.GrailsClass
 import org.codehaus.groovy.grails.web.mapping.UrlMappings
 
@@ -26,7 +27,7 @@ class GrailsReader {
 
     List extractUrlMappingsFor(GrailsClass controller){
         def mappedActions = grailsUrlMappingsHolder.urlMappings.findAll {
-            it.controllerName == controller.name.toLowerCase()
+            it.controllerName == GrailsNameUtils.getPropertyNameRepresentation(controller.name)
         }
 
         if(!mappedActions){

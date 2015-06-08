@@ -16,5 +16,7 @@ class UrlMappings {
 
         "/api/others"    (controller: 'other', action: [POST: "create"], parseRequest: true)
         "/api/others/$id"(controller: 'other', action: [PUT: "update", PATCH: "update", GET: "get", DELETE: "delete"], parseRequest: true)
+
+        "/api/something/else"    (controller: 'apiSomethingElse', action: [POST: "create"], parseRequest: true)
 	}
 }
