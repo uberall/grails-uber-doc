@@ -5,14 +5,19 @@ import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy
 import java.lang.annotation.Target
 
-/**
- * Defines information about properties (attributes) of a given request/response object to be made available in the API documentation.
- *
- * @see UberDocModel
- */
-@Target(ElementType.FIELD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@interface UberDocProperty {
+@interface UberDocImplicitProperty {
+
+    /**
+     * The implicit property's name (e.g.: "id")
+     */
+    String name()
+
+    /**
+     * The implicit property's type (e.g.: Long)
+     */
+    Class type() default {}
 
     /**
      * An example value of a request/response attribute.
@@ -28,5 +33,4 @@ import java.lang.annotation.Target
      * Defines whether the property is mandatory.
      */
     boolean required() default false
-
 }

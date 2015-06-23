@@ -1,5 +1,7 @@
 package uberdoc.metadata
 
+import uberdoc.annotation.UberDocImplicitProperties
+import uberdoc.annotation.UberDocImplicitProperty
 import uberdoc.annotation.UberDocModel
 import uberdoc.annotation.UberDocProperty
 import groovy.util.logging.Log4j
@@ -76,6 +78,7 @@ class RequestAndResponseObjects {
 
             // collect class information
             UberDocModel modelAnnotation = clazz.getAnnotation(UberDocModel)
+
             Map clazzInfo = [:]
             clazzInfo << [name: clazz.simpleName]
             clazzInfo << [description: modelAnnotation.description()]
@@ -85,12 +88,14 @@ class RequestAndResponseObjects {
             def domainClassConstraints = domainClass.getConstrainedProperties()
 
             // go over each field that is annotated and grab information from it
-            clazz.declaredFields.each { Field field ->
+            getAllFields(clazz).each { Field field ->
                 if (field.isAnnotationPresent(UberDocProperty)) {
                     Map fieldInformation = getProperties(field, domainClassConstraints)
                     clazzInfo.properties << fieldInformation
                 }
             }
+
+            clazzInfo.properties.addAll(getImplicitProperties(clazz))
 
             result << [(clazz.simpleName): clazzInfo]
         }
@@ -109,6 +114,7 @@ class RequestAndResponseObjects {
         propertyMap << [type: field.type.simpleName]
         propertyMap << [description: propertyAnnotation.description()]
         propertyMap << [sampleValue: propertyAnnotation.sampleValue()]
+        propertyMap << [required: propertyAnnotation.required()]
 
         // read constraints
         classConstraints.entrySet().findAll{it.key == field.name}.each { constrainedProperty ->
@@ -127,4 +133,42 @@ class RequestAndResponseObjects {
         return propertyMap
     }
 
+    private List getImplicitProperties(Class clazz){
+        def result = []
+        UberDocImplicitProperty implicitProperty = clazz.getAnnotation(UberDocImplicitProperty)
+        UberDocImplicitProperties implicitProperties = clazz.getAnnotation(UberDocImplicitProperties)
+
+        if(implicitProperty){
+            result << [
+                    name: implicitProperty.name(),
+                    type: implicitProperty.type().simpleName,
+                    description: implicitProperty.description(),
+                    sampleValue: implicitProperty.sampleValue(),
+                    required: implicitProperty.required()
+            ]
+        }
+
+        if(implicitProperties){
+            implicitProperties.value().each { impl ->
+                result << [
+                        name: impl.name(),
+                        type: impl.type().simpleName,
+                        description: impl.description(),
+                        sampleValue: impl.sampleValue(),
+                        required: impl.required()
+                ]
+            }
+        }
+
+        return result
+    }
+
+    // @see http://stackoverflow.com/questions/1042798/retrieving-the-inherited-attribute-names-values-using-java-reflection
+    private List<Field> getAllFields(Class<?> type) {
+        List<Field> fields = new ArrayList<Field>();
+        for (Class<?> c = type; c != null; c = c.getSuperclass()) {
+            fields.addAll(Arrays.asList(c.getDeclaredFields()));
+        }
+        return fields;
+    }
 }

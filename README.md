@@ -52,6 +52,7 @@ This plugin offers basically 8 annotations, along with plural variations of some
 - @UberDocQueryParam(s): documents information about query parameters used in a resources URL. For instance, it can be used to document pagination parameters within a URL like /api/dogs/?max=10&offset=3.
 - @UberDocModel: describes classes used as request or response objects.
 - @UberDocProperty: defines information about properties of a given request/response object to be made available in the API documentation, such as a description and a sample value.
+- @UberDocImplicitProperty(ies): allows describing implicit properties (e.g.: id, dateCreated) or properties inherited from superclasses.
 
 Just annotate the proper classes / methods, inject UberDocService and play around with getApiDocs. All of the rest (cacheing, UI) can be implemented in the way that fits you best :)
 

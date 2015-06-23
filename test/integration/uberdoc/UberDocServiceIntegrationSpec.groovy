@@ -86,28 +86,61 @@ class UberDocServiceIntegrationSpec extends IntegrationSpec {
         3 == m.objects."Pod".size()
         "Pod" == m.objects."Pod".name
         "This class does something..." == m.objects."Pod".description
-        2 == m.objects."Pod".properties.size()
+        6 == m.objects."Pod".properties.size()
 
-        5 == m.objects."Pod".properties.first().size()
-        "license" == m.objects."Pod".properties.first().name
-        "String" == m.objects."Pod".properties.first().type
-        "license is used for ..." == m.objects."Pod".properties.first().description
-        "DBNG3r" == m.objects."Pod".properties.first().sampleValue
-        2 == m.objects."Pod".properties.first().constraints.size()
-        "blank" == m.objects."Pod".properties.first().constraints.first().constraint
-        true == m.objects."Pod".properties.first().constraints.first().value
-        "nullable" == m.objects."Pod".properties.first().constraints.last().constraint
-        false == m.objects."Pod".properties.first().constraints.last().value
+        6 == m.objects."Pod".properties[0].size()
+        "license" == m.objects."Pod".properties[0].name
+        "String" == m.objects."Pod".properties[0].type
+        "license is used for ..." == m.objects."Pod".properties[0].description
+        "DBNG3r" == m.objects."Pod".properties[0].sampleValue
+        m.objects."Pod".properties[0].required
+        2 == m.objects."Pod".properties[0].constraints.size()
+        "blank" == m.objects."Pod".properties[0].constraints.first().constraint
+        true == m.objects."Pod".properties[0].constraints.first().value
+        "nullable" == m.objects."Pod".properties[0].constraints.last().constraint
+        false == m.objects."Pod".properties[0].constraints.last().value
 
-        5 == m.objects."Pod".properties.last().size()
-        "botName" == m.objects."Pod".properties.last().name
-        "String" == m.objects."Pod".properties.last().type
-        "botName is used for movies credits ..." == m.objects."Pod".properties.last().description
-        "C3PO" == m.objects."Pod".properties.last().sampleValue
-        2 == m.objects."Pod".properties.last().constraints.size()
-        "custom" == m.objects."Pod".properties.last().constraints.first().constraint
-        "see object documentation" == m.objects."Pod".properties.last().constraints.first().value
-        "nullable" == m.objects."Pod".properties.first().constraints.last().constraint
-        false == m.objects."Pod".properties.first().constraints.last().value
+        6 == m.objects."Pod".properties[1].size()
+        "botName" == m.objects."Pod".properties[1].name
+        "String" == m.objects."Pod".properties[1].type
+        "botName is used for movies credits ..." == m.objects."Pod".properties[1].description
+        "C3PO" == m.objects."Pod".properties[1].sampleValue
+        !m.objects."Pod".properties[1].required
+        2 == m.objects."Pod".properties[1].constraints.size()
+        "custom" == m.objects."Pod".properties[1].constraints.first().constraint
+        "see object documentation" == m.objects."Pod".properties[1].constraints.first().value
+        "nullable" == m.objects."Pod".properties[1].constraints.last().constraint
+        false == m.objects."Pod".properties[1].constraints.last().value
+
+        6 == m.objects."Pod".properties[2].size()
+        "shared" == m.objects."Pod".properties[2].name
+        "String" == m.objects."Pod".properties[2].type
+        "shared is used for ..." == m.objects."Pod".properties[2].description
+        "sherd" == m.objects."Pod".properties[2].sampleValue
+        !m.objects."Pod".properties[2].required
+        1 == m.objects."Pod".properties[2].constraints.size()
+        "nullable" == m.objects."Pod".properties[2].constraints.last().constraint
+        false == m.objects."Pod".properties[2].constraints.last().value
+
+        5 == m.objects."Pod".properties[3].size()
+        "dateCreated" == m.objects."Pod".properties[3].name
+        "Date" == m.objects."Pod".properties[3].type
+        "When the Pod was created" == m.objects."Pod".properties[3].description
+        !m.objects."Pod".properties[3].sampleValue
+        !m.objects."Pod".properties[3].required
+
+        5 == m.objects."Pod".properties[4].size()
+        "inherited" == m.objects."Pod".properties[4].name
+        "String" == m.objects."Pod".properties[4].type
+        "Just an inherited property" == m.objects."Pod".properties[4].description
+        !m.objects."Pod".properties[4].sampleValue
+        !m.objects."Pod".properties[4].required
+
+        5 == m.objects."Pod".properties[5].size()
+        "id" == m.objects."Pod".properties[5].name
+        "Long" == m.objects."Pod".properties[5].type
+        "Identifies a Pod" == m.objects."Pod".properties[5].description
+        !m.objects."Pod".properties[5].sampleValue
+        !m.objects."Pod".properties[5].required
     }
 }
