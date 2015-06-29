@@ -17,7 +17,7 @@ import java.lang.annotation.Target
     /**
      * The implicit property's type (e.g.: Long)
      */
-    Class type() default {}
+    Class type() default String
 
     /**
      * An example value of a request/response attribute.
