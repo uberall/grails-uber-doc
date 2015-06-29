@@ -20,6 +20,11 @@ import java.lang.annotation.Target
     Class type() default String
 
     /**
+     * The implicit property's type, when it's a collection (e.g.: collectionOfType = String means it's a Collection<String>)
+     */
+    Class collectionOfType() default String
+
+    /**
      * An example value of a request/response attribute.
      */
     String sampleValue() default ""
