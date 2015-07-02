@@ -85,7 +85,7 @@ class RequestAndResponseObjects {
             clazzInfo << [properties: []]
 
             GrailsDomainClass domainClass = grailsApplication.getDomainClass(clazz.name) as GrailsDomainClass
-            def domainClassConstraints = domainClass.getConstrainedProperties()
+            def domainClassConstraints = domainClass?.getConstrainedProperties()
 
             // go over each field that is annotated and grab information from it
             getAllFields(clazz).each { Field field ->
@@ -117,13 +117,15 @@ class RequestAndResponseObjects {
         propertyMap << [required: propertyAnnotation.required()]
 
         // read constraints
-        classConstraints.entrySet().findAll{it.key == field.name}.each { constrainedProperty ->
-            constrainedProperty.value.appliedConstraints.each { hibernateConstraint ->
-                if(hibernateConstraint.name != "validator"){
-                    constraints << [constraint: hibernateConstraint.name, value: hibernateConstraint.constraintParameter]
-                }
-                else{
-                    constraints << [constraint: "custom", value: "see object documentation"]
+        if(classConstraints){
+            classConstraints.entrySet().findAll{it.key == field.name}.each { constrainedProperty ->
+                constrainedProperty.value.appliedConstraints.each { hibernateConstraint ->
+                    if(hibernateConstraint.name != "validator"){
+                        constraints << [constraint: hibernateConstraint.name, value: hibernateConstraint.constraintParameter]
+                    }
+                    else{
+                        constraints << [constraint: "custom", value: "see object documentation"]
+                    }
                 }
             }
         }
