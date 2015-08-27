@@ -7,6 +7,7 @@ import uberdoc.annotation.UberDocProperty
 import groovy.util.logging.Log4j
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
+import uberdoc.messages.MessageReader
 
 import java.lang.reflect.Field
 
@@ -19,12 +20,14 @@ class RequestAndResponseObjects {
 
     private Set requestAndResponseClasses = []
     private GrailsApplication grailsApplication
+    private MessageReader messageReader
 
-    RequestAndResponseObjects(GrailsApplication grailsApplication) {
-        this.grailsApplication = grailsApplication
+    RequestAndResponseObjects(GrailsApplication g, def messageSource, Locale locale) {
+        grailsApplication = g
+        messageReader = new MessageReader(messageSource, locale)
     }
 
-    void extractFromResource(def uberDocResource){
+    void extractObjectsInfoFromResource(def uberDocResource){
 
         if(!uberDocResource){
             return
@@ -78,10 +81,11 @@ class RequestAndResponseObjects {
 
             // collect class information
             UberDocModel modelAnnotation = clazz.getAnnotation(UberDocModel)
+            String customDescription = messageReader.get("uberDoc.${clazz.simpleName}.description")
 
             Map clazzInfo = [:]
             clazzInfo << [name: clazz.simpleName]
-            clazzInfo << [description: modelAnnotation.description()]
+            clazzInfo << [description: modelAnnotation.description() ?: customDescription]
             clazzInfo << [properties: []]
 
             GrailsDomainClass domainClass = grailsApplication.getDomainClass(clazz.name) as GrailsDomainClass
@@ -109,11 +113,13 @@ class RequestAndResponseObjects {
         // grab info from annotation
         Map propertyMap = [:]
         def constraints = []
+        String customDescription = messageReader.get("uberDoc.${field.name}.description")
+        String customSampleValue = messageReader.get("uberDoc.${field.name}.sampleValue")
 
         propertyMap << [name: field.name]
         propertyMap << [type: field.type.simpleName]
-        propertyMap << [description: propertyAnnotation.description()]
-        propertyMap << [sampleValue: propertyAnnotation.sampleValue()]
+        propertyMap << [description: propertyAnnotation.description() ?: customDescription]
+        propertyMap << [sampleValue: propertyAnnotation.sampleValue() ?: customSampleValue]
         propertyMap << [required: propertyAnnotation.required()]
 
         // read constraints
@@ -137,26 +143,35 @@ class RequestAndResponseObjects {
 
     private List getImplicitProperties(Class clazz){
         def result = []
+        String customDescription = null
+        String customSampleValue = null
+
         UberDocImplicitProperty implicitProperty = clazz.getAnnotation(UberDocImplicitProperty)
         UberDocImplicitProperties implicitProperties = clazz.getAnnotation(UberDocImplicitProperties)
 
         if(implicitProperty){
+            customDescription = messageReader.get("uberDoc.${implicitProperty.name()}.description")
+            customSampleValue = messageReader.get("uberDoc.${implicitProperty.name()}.sampleValue")
+
             result << [
                     name: implicitProperty.name(),
                     type: implicitProperty.type().simpleName,
-                    description: implicitProperty.description(),
-                    sampleValue: implicitProperty.sampleValue(),
+                    description: implicitProperty.description() ?: customDescription,
+                    sampleValue: implicitProperty.sampleValue() ?: customSampleValue,
                     required: implicitProperty.required()
             ]
         }
 
         if(implicitProperties){
             implicitProperties.value().each { impl ->
+                customDescription = messageReader.get("uberDoc.${impl.name()}.description")
+                customSampleValue = messageReader.get("uberDoc.${impl.name()}.sampleValue")
+
                 result << [
                         name: impl.name(),
                         type: impl.type().simpleName,
-                        description: impl.description(),
-                        sampleValue: impl.sampleValue(),
+                        description: impl.description() ?: customDescription,
+                        sampleValue: impl.sampleValue() ?: customSampleValue,
                         required: impl.required()
                 ]
             }

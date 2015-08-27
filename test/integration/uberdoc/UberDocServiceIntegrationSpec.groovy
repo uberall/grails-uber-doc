@@ -6,10 +6,15 @@ class UberDocServiceIntegrationSpec extends IntegrationSpec {
 
     def grailsApplication
     def grailsUrlMappingsHolder
+    def messageSource
 
     void "apiDocs only retrieves information from controllers annotated with @UberDocController that are not deprecated on UrlMappings"() {
         given:
-        UberDocService service = new UberDocService(grailsApplication: grailsApplication, grailsUrlMappingsHolder: grailsUrlMappingsHolder)
+        UberDocService service = new UberDocService(
+                grailsApplication: grailsApplication,
+                grailsUrlMappingsHolder: grailsUrlMappingsHolder,
+                messageSource: messageSource
+        )
 
         when:
         def m = service.apiDocs
@@ -36,29 +41,29 @@ class UberDocServiceIntegrationSpec extends IntegrationSpec {
         "Pod" == m.resources[1].responseObject
         !m.resources[1].responseCollection
         3 == m.resources[1].headers.size()
-        3 == m.resources[1].errors.size()
+        4 == m.resources[1].errors.size()
         0 == m.resources[1].queryParams.size()
         3 == m.resources[1].uriParams.size()
 
         "PUT" == m.resources[2].method
-        "/api/pods/{id}" == m.resources[2].uri
+        "/api/pods/id" == m.resources[2].uri
         "Pod" == m.resources[2].requestObject
         "Pod" == m.resources[2].responseObject
         !m.resources[2].responseCollection
-        2 == m.resources[2].headers.size()
+        3 == m.resources[2].headers.size()
         3 == m.resources[2].errors.size()
         1 == m.resources[2].queryParams.size()
-        0 == m.resources[2].uriParams.size()
+        1 == m.resources[2].uriParams.size()
 
         "PATCH" == m.resources[3].method
-        "/api/pods/{id}" == m.resources[3].uri
+        "/api/pods/id" == m.resources[3].uri
         "Pod" == m.resources[3].requestObject
         "Pod" == m.resources[3].responseObject
         !m.resources[3].responseCollection
-        2 == m.resources[3].headers.size()
+        3 == m.resources[3].headers.size()
         3 == m.resources[3].errors.size()
         1 == m.resources[3].queryParams.size()
-        0 == m.resources[3].uriParams.size()
+        1 == m.resources[3].uriParams.size()
 
         "GET" == m.resources[4].method
         "/api/pods/id" == m.resources[4].uri
@@ -67,7 +72,7 @@ class UberDocServiceIntegrationSpec extends IntegrationSpec {
         "Pod" == m.resources[4].responseCollection
         2 == m.resources[4].headers.size()
         4 == m.resources[4].errors.size()
-        0 == m.resources[4].queryParams.size()
+        1 == m.resources[4].queryParams.size()
         1 == m.resources[4].uriParams.size()
 
         "DELETE" == m.resources[5].method

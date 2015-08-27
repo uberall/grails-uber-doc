@@ -17,6 +17,6 @@ import java.lang.annotation.Target
      * Provides information about the class used as request/response object, such as its purpose, situations where its
      * not mandatory, etc.
      */
-    String description()
+    String description() default ""
 
 }

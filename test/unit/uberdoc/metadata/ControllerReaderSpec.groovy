@@ -237,7 +237,7 @@ class ControllerReaderSpec extends Specification {
         reader.metadataReader = metadataReaderMock
 
         when:
-        def m = reader.controllerIsSupported
+        def m = reader.controllerSupported
 
         then:
         m
@@ -257,7 +257,7 @@ class ControllerReaderSpec extends Specification {
         reader.metadataReader = metadataReaderMock
 
         when:
-        def m = reader.controllerIsSupported
+        def m = reader.controllerSupported
 
         then:
         !m

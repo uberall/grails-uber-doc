@@ -1,7 +1,7 @@
 class UberdocGrailsPlugin {
 
     // the plugin version
-    def version = "0.1.5-SNAPSHOT"
+    def version = "0.1.7-SNAPSHOT"
 
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.4 > *"
@@ -41,7 +41,7 @@ This was done on purpose, so that your app can decide on the best way to display
     def license = "BSD"
 
     // Details of company behind the plugin (if there is one)
-    def organization = [ name: "uberall GmbH", url: "https://uberall.com/" ]
+    def organization = [ name: "uberall", url: "https://uberall.com/" ]
 
     // Any additional developers beyond the author specified above.
     def developers = [ [name: "Florian Langenhahn", email: "florian.langenhahn@uberall.com"] ]

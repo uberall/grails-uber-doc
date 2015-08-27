@@ -9,6 +9,7 @@ import uberdoc.annotation.UberDocQueryParams
 import uberdoc.annotation.UberDocResource
 import uberdoc.annotation.UberDocUriParam
 import uberdoc.annotation.UberDocUriParams
+import uberdoc.messages.MessageReader
 
 /**
  * Extracts meta-information and annotations info from methods using reflection.
@@ -16,13 +17,20 @@ import uberdoc.annotation.UberDocUriParams
 class MethodReader {
 
     def method
+    def messageSource
+    String uri
     MetadataReader reader
     List<Map> genericErrors
     List<Map> genericHeaders
+    Locale locale
+    MessageReader messageReader
 
-    MethodReader(method) {
-        this.method = method
+    MethodReader(m, ms) {
+        method = m
+        messageSource = ms
         reader = new MetadataReader()
+        locale = Locale.default
+        messageReader = new MessageReader(messageSource, locale)
     }
 
     MethodReader useGenericErrors(def g){
@@ -39,9 +47,43 @@ class MethodReader {
         return this
     }
 
+    MethodReader useURI(def u){
+        if(u){
+            uri = u.toString()
+                    .replace("/", ".")
+                    .replaceAll("\\*", "")
+                    .replaceAll("\\(\\*\\)", "")
+                    .replace("..", ".")
+
+            if(uri.startsWith(".")){
+                uri = uri.substring(1, uri.length())
+            }
+
+            if(uri.endsWith(".")){
+                uri = uri.substring(0, uri.length()-1)
+            }
+        }
+        return this
+    }
+
+    MethodReader useLocale(def l){
+        if(l){
+            locale = l
+            messageReader = new MessageReader(messageSource, locale)
+        }
+        return this
+    }
+
+    String getTitle(){
+        def uberDocResource = reader.getAnnotation(UberDocResource).inMethod(method)
+        def customTitle = messageReader.get("uberDoc.${uri}.title")
+        return uberDocResource?.title() ?: customTitle
+    }
+
     String getDescription(){
         def uberDocResource = reader.getAnnotation(UberDocResource).inMethod(method)
-        return uberDocResource?.description() ?: null
+        def customDescription = messageReader.get("uberDoc.${uri}.description")
+        return uberDocResource?.description() ?: customDescription
     }
 
     String getRequestObject(){
@@ -89,7 +131,8 @@ class MethodReader {
         if(!err){
             return [:]
         }
-        return [errorCode: err.errorCode(), httpCode: err.httpCode(), description: err.description()]
+        def customDescription = messageReader.get("uberDoc.${uri}.error.${err.httpCode()}.description")
+        return [errorCode: err.errorCode(), httpCode: err.httpCode(), description: err.description() ?: customDescription]
     }
 
     List<Map> getHeaders(){
@@ -118,7 +161,9 @@ class MethodReader {
         if(!hdr){
             return [:]
         }
-        return [name: hdr.name(), description: hdr.description(), required: hdr.required(), sampleValue: hdr.sampleValue()]
+        def customDescription = messageReader.get("uberDoc.${uri}.header.${hdr.name()}.description")
+        def customSampleValue = messageReader.get("uberDoc.${uri}.header.${hdr.name()}.sampleValue")
+        return [name: hdr.name(), description: hdr.description() ?: customDescription, required: hdr.required(), sampleValue: hdr.sampleValue() ?: customSampleValue]
     }
 
     List<Map> getUriParams(){
@@ -139,11 +184,13 @@ class MethodReader {
         return ret
     }
 
-    private Map parseUriParam(def hdr){
-        if(!hdr){
+    private Map parseUriParam(def urip){
+        if(!urip){
             return [:]
         }
-        return [name: hdr.name(), description: hdr.description(), sampleValue: hdr.sampleValue()]
+        def customDescription = messageReader.get("uberDoc.${uri}.header.${urip.name()}.description")
+        def customSampleValue = messageReader.get("uberDoc.${uri}.header.${urip.name()}.sampleValue")
+        return [name: urip.name(), description: urip.description() ?: customDescription, sampleValue: urip.sampleValue() ?: customSampleValue]
     }
 
     List<Map> getQueryParams(){
@@ -164,11 +211,13 @@ class MethodReader {
         return ret
     }
 
-    private Map parseQueryParam(def hdr){
-        if(!hdr){
+    private Map parseQueryParam(def qp){
+        if(!qp){
             return [:]
         }
-        return [name: hdr.name(), description: hdr.description(), sampleValue: hdr.sampleValue(), required: hdr.required(), isCollection: hdr.isCollection()]
+        def customDescription = messageReader.get("uberDoc.${uri}.header.${qp.name()}.description")
+        def customSampleValue = messageReader.get("uberDoc.${uri}.header.${qp.name()}.sampleValue")
+        return [name: qp.name(), description: qp.description() ?: customDescription, sampleValue: qp.sampleValue() ?: customSampleValue, required: qp.required(), isCollection: qp.isCollection()]
     }
 
 }

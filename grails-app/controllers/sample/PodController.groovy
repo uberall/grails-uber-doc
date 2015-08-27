@@ -26,6 +26,7 @@ class PodController { // this example simulates a CRUD-ish controller
     @UberDocResource(requestObject = Pod, responseCollectionOf = Pod, description = "this resource allows all Pods to be retrieved from DB")
     @UberDocError(errorCode = "NF404", httpCode = 404, description = "returned if the resource does not exist")
     @UberDocUriParam(name = "id", description = "the id of the Pod to be retrieved from DB", sampleValue = "4")
+    @UberDocQueryParam(name = "id")
     def get() { }
 
     @UberDocHeader(name = "hdr", sampleValue = "sample")
@@ -37,6 +38,7 @@ class PodController { // this example simulates a CRUD-ish controller
     def list() { }
 
     @UberDocResource(object = Pod)
+    @UberDocError(errorCode = "NF404", httpCode = 404)
     @UberDocHeader(name = "some header param", sampleValue = "hdr", description = "this is just something else to be sent on creation")
     @UberDocUriParams([
             @UberDocUriParam(name = "firstId", description = "the first id", sampleValue = "1"),
@@ -45,8 +47,10 @@ class PodController { // this example simulates a CRUD-ish controller
     @UberDocUriParam(name = "thirdId", description = "the third id", sampleValue = "3")
     def create() { }
 
+    @UberDocHeader(name = "hdr")
     @UberDocResource(object = Pod)
     @UberDocQueryParam(name = "id", description = "the id of the Pod to be retrieved from DB", sampleValue = "4")
+    @UberDocUriParam(name = "id")
     def update() { }
 
     @UberDocQueryParam(name = "id", description = "the id of the Pod to be retrieved from DB", sampleValue = "4")

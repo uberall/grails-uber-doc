@@ -32,7 +32,7 @@ import java.lang.annotation.Target
     /**
      * Describes the attribute, its purpose, custom validations, etc.
      */
-    String description()
+    String description() default ""
 
     /**
      * Defines whether the property is mandatory.

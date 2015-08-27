@@ -14,6 +14,12 @@ import java.lang.annotation.Target
 @interface UberDocResource {
 
     /**
+     * The RESTful resource short description.
+     * @return
+     */
+    String title() default ""
+
+    /**
      * The RESTful resource description, its purpose, usage, etc.
      * @return
      */

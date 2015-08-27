@@ -18,7 +18,7 @@ class ControllerReader {
         metadataReader = new MetadataReader()
     }
 
-    boolean getControllerIsSupported(){
+    boolean isControllerSupported(){
         return metadataReader.getAnnotation(UberDocController).inController(controller)
     }
 
