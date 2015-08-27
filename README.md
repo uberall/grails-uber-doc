@@ -54,6 +54,8 @@ This plugin offers basically 8 annotations, along with plural variations of some
 - @UberDocProperty: defines information about properties of a given request/response object to be made available in the API documentation, such as a description and a sample value.
 - @UberDocImplicitProperty(ies): allows describing implicit properties (e.g.: id, dateCreated) or properties inherited from superclasses.
 
+Notice you don't need to manually enter textual information in annotations. By default, resources descriptions will be retrieved from regular message bundles, using proper locales. The information entered for description, title and sampleValue in annotations will only be used for overriding purposes. 
+
 Just annotate the proper classes / methods, inject UberDocService and play around with getApiDocs. All of the rest (cacheing, UI) can be implemented in the way that fits you best :)
 
 
