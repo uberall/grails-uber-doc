@@ -53,6 +53,7 @@ class MethodReader {
                     .replace("/", ".")
                     .replaceAll("\\*", "")
                     .replaceAll("\\(\\*\\)", "")
+                    .replace("()", "")
                     .replace("..", ".")
 
             if(uri.startsWith(".")){
