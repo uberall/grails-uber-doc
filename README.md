@@ -42,17 +42,26 @@ Examples of information about request / response objects returned by this method
 
 ## How to use this plugin
 
-This plugin offers basically 8 annotations, along with plural variations of some of them, when applicable:
+This plugin offers basically 9 annotations, along with plural variations of some of them, when applicable:
 
-- @UberDocController: identifies a controller which information should be made public on the API. If a given controller is meant to serve only an internal API of your app, just don't use this annotation and information about its resources won't be made available.
-- @UberDocResource: identifies a controller method (aka resource) which information should be made public on the API. If a given method on a controller is not meant to have its documentation made available, just don't annotate it.
-- @UberDocError(s): this annotation provides information about errors to be expected when interacting with a given resource / controller method. When used at controller level, defines information about errors to be expected when interacting with every method belonging to that controller.
-- @UberDocHeader(s): provides information about headers to be used when interacting with a given resource / controller method. Just like @UberDocError, when used at controller level, defines documentation to be applied to every method within that controller.
-- @UberDocUriParam(s): provides information about URI parameters used by a resource (e.g.: /api/dogs/{id}/children/{otherId}/). This annotation has a parameter called "name", which will be used for displaying about a specific parameter in the URI. Note that this is positional, meaning, an annotation about {id} should be used before an annotation about {otherId}, so that information gets displayed in the same order.
-- @UberDocQueryParam(s): documents information about query parameters used in a resources URL. For instance, it can be used to document pagination parameters within a URL like /api/dogs/?max=10&offset=3.
-- @UberDocModel: describes classes used as request or response objects.
-- @UberDocProperty: defines information about properties of a given request/response object to be made available in the API documentation, such as a description and a sample value.
-- @UberDocImplicitProperty(ies): allows describing implicit properties (e.g.: id, dateCreated) or properties inherited from superclasses.
+##### @UberDocController:
+identifies a controller which information should be made public on the API. If a given controller is meant to serve only an internal API of your app, just don't use this annotation and information about its resources won't be made available.
+##### @UberDocResource:
+identifies a controller method (aka resource) which information should be made public on the API. If a given method on a controller is not meant to have its documentation made available, just don't annotate it.
+##### @UberDocError(s):
+this annotation provides information about errors to be expected when interacting with a given resource / controller method. When used at controller level, defines information about errors to be expected when interacting with every method belonging to that controller.
+##### @UberDocHeader(s):
+provides information about headers to be used when interacting with a given resource / controller method. Just like @UberDocError, when used at controller level, defines documentation to be applied to every method within that controller.
+##### @UberDocUriParam(s):
+provides information about URI parameters used by a resource (e.g.: /api/dogs/{id}/children/{otherId}/). This annotation has a parameter called "name", which will be used for displaying about a specific parameter in the URI. Note that this is positional, meaning, an annotation about {id} should be used before an annotation about {otherId}, so that information gets displayed in the same order.
+##### @UberDocQueryParam(s):
+documents information about query parameters used in a resources URL. For instance, it can be used to document pagination parameters within a URL like /api/dogs/?max=10&offset=3.
+##### @UberDocModel:
+describes classes used as request or response objects.
+##### @UberDocProperty:
+defines information about properties of a given request/response object to be made available in the API documentation, such as a description and a sample value.
+##### @UberDocImplicitProperty(ies):
+allows describing implicit properties (e.g.: id, dateCreated) or properties inherited from superclasses.
 
 Notice you don't need to manually enter textual information in annotations. By default, resources descriptions will be retrieved from regular message bundles, using proper locales. The information entered for description, title and sampleValue in annotations will only be used for overriding purposes. 
 
