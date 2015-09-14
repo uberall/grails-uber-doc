@@ -20,7 +20,7 @@ class ControllerReaderSpec extends Specification {
     UberDocHeader headerMock
     MessageSource messageSourceMock
 
-    def setup(){
+    def setup() {
         metadataReaderMock = Mock()
         errorsMock = Mock()
         controllerMock = Mock()

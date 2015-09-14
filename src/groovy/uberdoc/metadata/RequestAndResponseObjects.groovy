@@ -24,26 +24,26 @@ class RequestAndResponseObjects {
         messageReader = new MessageReader(messageSource, locale)
     }
 
-    void extractObjectsInfoFromResource(UberDocResource uberDocResource){
+    void extractObjectsInfoFromResource(UberDocResource uberDocResource) {
 
-        if(!uberDocResource){
+        if (!uberDocResource) {
             return
         }
 
-        if(uberDocResource.requestObject() && !(uberDocResource.requestObject() in Closure)){
+        if (uberDocResource.requestObject() && !(uberDocResource.requestObject() in Closure)) {
             requestAndResponseClasses << uberDocResource.requestObject()
         }
 
-        if(uberDocResource.responseObject() && !(uberDocResource.responseObject() in Closure)){
+        if (uberDocResource.responseObject() && !(uberDocResource.responseObject() in Closure)) {
             requestAndResponseClasses << uberDocResource.responseObject()
         }
 
-        if(uberDocResource.object() && !(uberDocResource.object() in Closure)){
+        if (uberDocResource.object() && !(uberDocResource.object() in Closure)) {
             requestAndResponseClasses << uberDocResource.object()
         }
     }
 
-    Map fetch(){
+    Map fetch() {
         return convertToMap(requestAndResponseClasses)
     }
 
@@ -129,13 +129,12 @@ class RequestAndResponseObjects {
             propertyMap << [type: field.type.simpleName]
         }
         // read constraints
-        if(classConstraints){
-            classConstraints.entrySet().findAll{it.key == field.name}.each { constrainedProperty ->
+        if (classConstraints) {
+            classConstraints.entrySet().findAll { it.key == field.name }.each { constrainedProperty ->
                 constrainedProperty.value.appliedConstraints.each { hibernateConstraint ->
-                    if(hibernateConstraint.name != "validator"){
+                    if (hibernateConstraint.name != "validator") {
                         constraints << [constraint: hibernateConstraint.name, value: hibernateConstraint.constraintParameter]
-                    }
-                    else{
+                    } else {
                         constraints << [constraint: "custom", value: "uberDoc.object.${objectName}.constraints.custom"]
                     }
                 }
@@ -150,7 +149,7 @@ class RequestAndResponseObjects {
         return propertyMap
     }
 
-    private List getImplicitProperties(Class clazz){
+    private List getImplicitProperties(Class clazz) {
         def result = []
         String customDescription = null
         String customSampleValue = null
@@ -158,22 +157,22 @@ class RequestAndResponseObjects {
         UberDocExplicitProperty implicitProperty = clazz.getAnnotation(UberDocExplicitProperty)
         UberDocExplicitProperties implicitProperties = clazz.getAnnotation(UberDocExplicitProperties)
 
-        if(implicitProperty){
+        if (implicitProperty) {
             customDescription = messageReader.get("uberDoc.object.${clazz.simpleName}.${implicitProperty.name()}.description")
             customSampleValue = messageReader.get("uberDoc.object.${clazz.simpleName}.${implicitProperty.name()}.sampleValue")
 
             result << [
-                    name: implicitProperty.name(),
-                    type: implicitProperty.type().simpleName,
+                    name       : implicitProperty.name(),
+                    type       : implicitProperty.type().simpleName,
                     description: customDescription,
                     sampleValue: customSampleValue,
-                    required: implicitProperty.required()
+                    required   : implicitProperty.required()
             ]
         }
 
         def explicitNames = clazz.getProperties().declaredFields.name
 
-        if(implicitProperties){
+        if (implicitProperties) {
             implicitProperties.value().each { impl ->
 
                 if (explicitNames.contains(impl.name())) {
@@ -184,11 +183,11 @@ class RequestAndResponseObjects {
                 customSampleValue = messageReader.get("uberDoc.object.${clazz.simpleName}.${impl.name()}.sampleValue")
 
                 result << [
-                        name: impl.name(),
-                        type: impl.type().simpleName,
+                        name       : impl.name(),
+                        type       : impl.type().simpleName,
                         description: customDescription,
                         sampleValue: customSampleValue,
-                        required: impl.required()
+                        required   : impl.required()
                 ]
             }
         }

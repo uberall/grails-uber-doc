@@ -25,7 +25,7 @@ class UberDocResourceParser {
         this.controllerReader.isControllerSupported()
     }
 
-    Map parse(def controllerMethod, def mapping){
+    Map parse(def controllerMethod, def mapping) {
         Map restfulResource = [:]
         methodReader = new MethodReader(controllerMethod, messageSource, mapping.uri, mapping.method)
                 .useGenericErrors(genericErrors)

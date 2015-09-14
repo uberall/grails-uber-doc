@@ -12,7 +12,7 @@ class ApiSomethingElseController {
     @UberDocResource(requestObject = Pod, responseObject = Pod, responseIsCollection = true)
     @UberDocError(errorCode = "NF404", httpCode = 404)
     @UberDocUriParam(name = "id")
-    def get() { }
+    def get() {}
 
     @UberDocHeader(name = "hdr")
     @UberDocResource(responseObject = Pod)
@@ -20,7 +20,7 @@ class ApiSomethingElseController {
             @UberDocQueryParam(name = "page", required = false)
     ])
     @UberDocQueryParam(name = "max", required = true)
-    def list() { }
+    def list() {}
 
     @UberDocResource(object = Pod)
     @UberDocHeader(name = "some header param")
@@ -29,12 +29,12 @@ class ApiSomethingElseController {
             @UberDocUriParam(name = "secondId")
     ])
     @UberDocUriParam(name = "thirdId")
-    def create() { }
+    def create() {}
 
     @UberDocResource(object = Pod)
     @UberDocQueryParam(name = "id")
-    def update() { }
+    def update() {}
 
     @UberDocQueryParam(name = "id")
-    def delete() { }
+    def delete() {}
 }

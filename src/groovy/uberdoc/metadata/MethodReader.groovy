@@ -1,16 +1,6 @@
 package uberdoc.metadata
 
-import uberdoc.annotation.UberDocBodyParam
-import uberdoc.annotation.UberDocBodyParams
-import uberdoc.annotation.UberDocError
-import uberdoc.annotation.UberDocErrors
-import uberdoc.annotation.UberDocHeader
-import uberdoc.annotation.UberDocHeaders
-import uberdoc.annotation.UberDocQueryParam
-import uberdoc.annotation.UberDocQueryParams
-import uberdoc.annotation.UberDocResource
-import uberdoc.annotation.UberDocUriParam
-import uberdoc.annotation.UberDocUriParams
+import uberdoc.annotation.*
 import uberdoc.messages.MessageReader
 
 /**
@@ -40,24 +30,24 @@ class MethodReader {
         formatUriStrings(mappingUri, mappingMethod)
     }
 
-    MethodReader useGenericErrors(def g){
-        if(g){
+    MethodReader useGenericErrors(def g) {
+        if (g) {
             genericErrors = g
         }
         return this
     }
 
-    MethodReader useGenericHeaders(def g){
-        if(g){
+    MethodReader useGenericHeaders(def g) {
+        if (g) {
             genericHeaders = g
         }
         return this
     }
 
-    MethodReader formatUriStrings(def u, def httpMethod){
+    MethodReader formatUriStrings(def u, def httpMethod) {
 
 
-        if(u){
+        if (u) {
             // add the URI parameters to the URI as well
             uri = u.toString()
 
@@ -69,12 +59,12 @@ class MethodReader {
             // if there are still variables placeholders, mark them as undefined parameters
             uriMessageKey = uri.replace("/", ".").replaceAll("\\(\\*\\)", "UNDEFINED_PARAMETER")
 
-            if(uriMessageKey.startsWith(".")){
+            if (uriMessageKey.startsWith(".")) {
                 uriMessageKey = uriMessageKey.substring(1, uriMessageKey.length())
             }
 
-            if(uriMessageKey.endsWith(".")){
-                uriMessageKey = uriMessageKey.substring(0, uriMessageKey.length()-1)
+            if (uriMessageKey.endsWith(".")) {
+                uriMessageKey = uriMessageKey.substring(0, uriMessageKey.length() - 1)
             }
 
             uriMessageKey = "$uriMessageKey.$httpMethod"
@@ -82,100 +72,100 @@ class MethodReader {
         return this
     }
 
-    MethodReader useLocale(def l){
-        if(l){
+    MethodReader useLocale(def l) {
+        if (l) {
             locale = l
             messageReader = new MessageReader(messageSource, locale)
         }
         return this
     }
 
-    String getTitle(){
+    String getTitle() {
         return messageReader.get("uberDoc.resource.${uriMessageKey}.title")
     }
 
-    String getDescription(){
+    String getDescription() {
         return messageReader.get("uberDoc.resource.${uriMessageKey}.description")
     }
 
-    String getRequestObject(){
+    String getRequestObject() {
         UberDocResource uberDocResource = reader.getAnnotation(UberDocResource).inMethod(method)
-        def requestObject = (uberDocResource?.requestObject() in Closure ) ? null : uberDocResource?.requestObject()
-        def object = (uberDocResource?.object() in Closure ) ? null : uberDocResource?.object()
+        def requestObject = (uberDocResource?.requestObject() in Closure) ? null : uberDocResource?.requestObject()
+        def object = (uberDocResource?.object() in Closure) ? null : uberDocResource?.object()
         return requestObject?.simpleName ?: object?.simpleName
     }
 
-    String getResponseObject(){
+    String getResponseObject() {
         UberDocResource uberDocResource = reader.getAnnotation(UberDocResource).inMethod(method)
-        def responseObject = (uberDocResource?.responseObject() in Closure ) ? null : uberDocResource?.responseObject()
-        def object = (uberDocResource?.object() in Closure ) ? null : uberDocResource?.object()
+        def responseObject = (uberDocResource?.responseObject() in Closure) ? null : uberDocResource?.responseObject()
+        def object = (uberDocResource?.object() in Closure) ? null : uberDocResource?.object()
         return responseObject?.simpleName ?: object?.simpleName
     }
 
-    boolean responseIsCollection(){
+    boolean responseIsCollection() {
         UberDocResource uberDocResource = reader.getAnnotation(UberDocResource).inMethod(method)
         return (uberDocResource?.responseIsCollection())
     }
 
-    boolean requestIsCollection(){
+    boolean requestIsCollection() {
         UberDocResource uberDocResource = reader.getAnnotation(UberDocResource).inMethod(method)
         return (uberDocResource?.requestIsCollection())
     }
 
-    List<Map> getErrors(){
+    List<Map> getErrors() {
         def ret = []
         def methodErrors = reader.getAnnotation(UberDocErrors).inMethod(method)
         def singleError = reader.getAnnotation(UberDocError).inMethod(method)
 
-        if(singleError){
+        if (singleError) {
             ret << parseError(singleError)
         }
 
-        if(methodErrors){
+        if (methodErrors) {
             methodErrors.value().each {
                 ret << parseError(it)
             }
         }
 
-        if(genericErrors){
+        if (genericErrors) {
             ret.addAll(genericErrors)
         }
 
         return ret
     }
 
-    private Map parseError(def err){
-        if(!err){
+    private Map parseError(def err) {
+        if (!err) {
             return [:]
         }
         def description = messageReader.get("uberDoc.resource.${uriMessageKey}.error.${err.httpCode()}.description")
         return [errorCode: err.errorCode(), httpCode: err.httpCode(), description: description]
     }
 
-    List<Map> getHeaders(){
+    List<Map> getHeaders() {
         def ret = []
         def methodHeaders = reader.getAnnotation(UberDocHeaders).inMethod(method)
         def singleHeader = reader.getAnnotation(UberDocHeader).inMethod(method)
 
-        if(singleHeader){
+        if (singleHeader) {
             ret << parseHeader(singleHeader)
         }
 
-        if(methodHeaders){
+        if (methodHeaders) {
             methodHeaders.value().each {
                 ret << parseHeader(it)
             }
         }
 
-        if(genericHeaders){
+        if (genericHeaders) {
             ret.addAll(genericHeaders)
         }
 
         return ret
     }
 
-    private Map parseHeader(def hdr){
-        if(!hdr){
+    private Map parseHeader(def hdr) {
+        if (!hdr) {
             return [:]
         }
         def description = messageReader.get("uberDoc.resource.${uriMessageKey}.header.${hdr.name()}.description")
@@ -183,16 +173,16 @@ class MethodReader {
         return [name: hdr.name(), description: description, required: hdr.required(), sampleValue: sampleValue]
     }
 
-    List<Map> getUriParams(){
+    List<Map> getUriParams() {
         def ret = []
         def methodUriParams = reader.getAnnotation(UberDocUriParams).inMethod(method)
         def singleUriParam = reader.getAnnotation(UberDocUriParam).inMethod(method)
 
-        if(singleUriParam){
+        if (singleUriParam) {
             ret << parseUriParam(singleUriParam)
         }
 
-        if(methodUriParams){
+        if (methodUriParams) {
             methodUriParams.value().each {
                 ret << parseUriParam(it)
             }
@@ -201,8 +191,8 @@ class MethodReader {
         return ret
     }
 
-    private Map parseUriParam(def urip){
-        if(!urip){
+    private Map parseUriParam(def urip) {
+        if (!urip) {
             return [:]
         }
         def description = messageReader.get("uberDoc.resource.${uriMessageKey}.uriParam.${urip.name()}.description")
@@ -210,16 +200,16 @@ class MethodReader {
         return [name: urip.name(), description: description, sampleValue: sampleValue]
     }
 
-    List<Map> getQueryParams(){
+    List<Map> getQueryParams() {
         def ret = []
         def methodQueryParams = reader.getAnnotation(UberDocQueryParams).inMethod(method)
         def singleQueryParam = reader.getAnnotation(UberDocQueryParam).inMethod(method)
 
-        if(singleQueryParam){
+        if (singleQueryParam) {
             ret << parseQueryParam(singleQueryParam)
         }
 
-        if(methodQueryParams){
+        if (methodQueryParams) {
             methodQueryParams.value().each {
                 ret << parseQueryParam(it)
             }
@@ -228,28 +218,28 @@ class MethodReader {
         return ret
     }
 
-    private Map parseQueryParam(def qp){
-        if(!qp){
+    private Map parseQueryParam(def qp) {
+        if (!qp) {
             return [:]
         }
         return [
-                name: qp.name(),
+                name       : qp.name(),
                 description: messageReader.get("uberDoc.resource.${uriMessageKey}.queryParam.${qp.name()}.description"),
                 sampleValue: messageReader.get("uberDoc.resource.${uriMessageKey}.queryParam.${qp.name()}.sampleValue"),
-                required: qp.required(),
+                required   : qp.required(),
         ]
     }
 
-    List<Map> getBodyParams(){
+    List<Map> getBodyParams() {
         def ret = []
         def methodBodyParams = reader.getAnnotation(UberDocBodyParams).inMethod(method)
         def singleQueryParam = reader.getAnnotation(UberDocBodyParam).inMethod(method)
 
-        if(singleQueryParam){
+        if (singleQueryParam) {
             ret << parseBodyParam(singleQueryParam)
         }
 
-        if(methodBodyParams){
+        if (methodBodyParams) {
             methodBodyParams.value().each {
                 ret << parseBodyParam(it)
             }
@@ -258,22 +248,24 @@ class MethodReader {
         return ret
     }
 
-    private Map parseBodyParam(def bp){
-        if(!bp){
+    private Map parseBodyParam(def bp) {
+        if (!bp) {
             return [:]
         }
         return [
-                name: bp.name(),
+                name       : bp.name(),
                 description: messageReader.get("uberDoc.resource.${uriMessageKey}.bodyParam.${bp.name()}.description"),
                 sampleValue: messageReader.get("uberDoc.resource.${uriMessageKey}.bodyParam.${bp.name()}.sampleValue"),
-                type: bp.type().simpleName,
-                required: bp.required(),
+                type       : bp.type().simpleName,
+                required   : bp.required(),
         ]
     }
 
-    private String replaceUriParams(){
+    private String replaceUriParams() {
         List<String> uriParamNames = []
-        if (reader.getAnnotation(UberDocUriParams).inMethod(method)) uriParamNames << reader.getAnnotation(UberDocUriParams).inMethod(method).value().collect { it.name() }
+        if (reader.getAnnotation(UberDocUriParams).inMethod(method)) uriParamNames << reader.getAnnotation(UberDocUriParams).inMethod(method).value().collect {
+            it.name()
+        }
         if (reader.getAnnotation(UberDocUriParam).inMethod(method)) uriParamNames.add(reader.getAnnotation(UberDocUriParam).inMethod(method).name())
 
         if (uriParamNames.size() == 0) return uri

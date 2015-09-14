@@ -11,20 +11,20 @@ class MetadataReader {
 
     private def type
 
-    MetadataReader getAnnotation(def t){
+    MetadataReader getAnnotation(def t) {
         type = t
         return this
     }
 
-    def inClass(GrailsClass object){
+    def inClass(GrailsClass object) {
         return object.annotations.find { it.annotationType() == type }
     }
 
-    def inController(GrailsClass controller){
+    def inController(GrailsClass controller) {
         return controller.clazz.annotations.find { it.annotationType() == type }
     }
 
-    def inMethod(Method method){
+    def inMethod(Method method) {
         return method.annotations.find { it.annotationType() == type }
     }
 

@@ -12,7 +12,7 @@ class PodController { // this example simulates a CRUD-ish controller
     @UberDocResource(responseObject = Pod, responseIsCollection = true)
     @UberDocError(errorCode = "NF404", httpCode = 404)
     @UberDocUriParam(name = "id")
-    def get() { }
+    def get() {}
 
     @UberDocHeader(name = "hdr")
     @UberDocResource(responseObject = Pod, responseIsCollection = true)
@@ -20,7 +20,7 @@ class PodController { // this example simulates a CRUD-ish controller
             @UberDocQueryParam(name = "page", required = false)
     ])
     @UberDocQueryParam(name = "max", required = true)
-    def list() { }
+    def list() {}
 
     @UberDocResource(object = Pod)
     @UberDocError(errorCode = "NF404", httpCode = 404)
@@ -30,17 +30,17 @@ class PodController { // this example simulates a CRUD-ish controller
             @UberDocUriParam(name = "secondId")
     ])
     @UberDocUriParam(name = "thirdId")
-    def create() { }
+    def create() {}
 
     @UberDocHeader(name = "hdr")
     @UberDocResource(requestObject = Pod, responseObject = Pod)
     @UberDocUriParam(name = "id")
     @UberDocQueryParam(name = "foobar")
-    def update() { }
+    def update() {}
 
     @UberDocResource()
     @UberDocUriParam(name = "id")
-    def delete() { }
+    def delete() {}
 
     @UberDocHeader(name = "never_reached")
     def foobar() {}

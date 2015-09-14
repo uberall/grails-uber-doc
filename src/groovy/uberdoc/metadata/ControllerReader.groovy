@@ -24,23 +24,23 @@ class ControllerReader {
         messageReader = new MessageReader(messageSource, Locale.default)
     }
 
-    MethodReader useLocale(def l){
-        if(l){
+    MethodReader useLocale(def l) {
+        if (l) {
             locale = l
             messageReader = new MessageReader(messageSource, locale)
         }
         return this
     }
 
-    boolean isControllerSupported(){
+    boolean isControllerSupported() {
         return metadataReader.getAnnotation(UberDocController).inController(controller)
     }
 
-    List<Map> getHeaders(){
+    List<Map> getHeaders() {
         UberDocHeaders headers = metadataReader.getAnnotation(UberDocHeaders).inController(controller)
         def ret = []
 
-        if(!headers){
+        if (!headers) {
             return []
         }
 

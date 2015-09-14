@@ -24,7 +24,7 @@ class Pod extends AbstractObject {
     static constraints = {
         license blank: true, nullable: false
         botName validator: { val, obj ->
-            if(!val) {
+            if (!val) {
                 return false
             }
         }

@@ -1,11 +1,10 @@
 package uberdoc.metadata
 
-import uberdoc.annotation.UberDocController
-import uberdoc.annotation.UberDocErrors
 import org.codehaus.groovy.grails.commons.GrailsClass
 import sample.OtherController
 import sample.PodController
 import spock.lang.Specification
+import uberdoc.annotation.UberDocController
 import uberdoc.annotation.UberDocError
 
 class MetadataReaderSpec extends Specification {
