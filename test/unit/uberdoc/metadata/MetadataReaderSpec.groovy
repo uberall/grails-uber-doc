@@ -21,18 +21,6 @@ class MetadataReaderSpec extends Specification {
         !annotation
     }
 
-    void "getAnnotation for PodController and annotation Errors returns an instance"() {
-        given:
-        MetadataReader reader = new MetadataReader()
-
-        when:
-        def annotation = reader.getAnnotation(UberDocErrors).inClass(PodController.asType(GrailsClass))
-
-        then:
-        annotation
-        3 == annotation.value().size()
-    }
-
     void "getAnnotation for PodController and annotation UberDocController returns an instance"() {
         given:
         MetadataReader reader = new MetadataReader()

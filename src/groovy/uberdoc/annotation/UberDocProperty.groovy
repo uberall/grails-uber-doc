@@ -15,18 +15,7 @@ import java.lang.annotation.Target
 @interface UberDocProperty {
 
     /**
-     * An example value of a request/response attribute.
-     */
-    String sampleValue() default ""
-
-    /**
-     * Describes the attribute, its purpose, custom validations, etc.
-     */
-    String description() default ""
-
-    /**
      * Defines whether the property is mandatory.
      */
     boolean required() default false
-
 }

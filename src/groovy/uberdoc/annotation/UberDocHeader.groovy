@@ -20,17 +20,7 @@ import java.lang.annotation.Target
     String name()
 
     /**
-     * Description of the header, may provide information about its usage, situations where it's mandatory or not, etc.
-     */
-    String description() default ""
-
-    /**
      * Indicates whether this header is mandatory for activating the resource.
      */
     boolean required() default true
-
-    /**
-     * A sample valid value for the header, for illustration purposes.
-     */
-    String sampleValue() default ""
 }

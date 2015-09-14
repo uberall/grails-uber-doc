@@ -31,7 +31,7 @@ class UberDocService {
     RequestAndResponseObjects objects
 
     /**
-     * This method returns a Map with two root objects/information:
+     * Returns a Map with two root objects/information:
      *
      * 1- resources: contain structured information about all resources, using UrlMappings information as base. The basic idea is to:
      * * go through every controller;
@@ -56,21 +56,25 @@ class UberDocService {
         apiInfo.resources = []
         apiInfo.objects = [:]
 
-        for(GrailsClass controller: grailsReader.controllers){
-            controllerReader = new ControllerReader(controller)
+        for (GrailsClass controller : grailsReader.controllers) {
 
-            if(controllerReader.controllerSupported){
+            def parser = new UberDocResourceParser(controller, messageSource)
+
+            // go over all controllers with uberDoc annotations
+            if (parser.controllerSupported) {
                 controllerMethods = grailsReader.getMethodsFrom(controller)
                 controllerMappings = grailsReader.extractUrlMappingsFor(controller)
 
+
                 controllerMappings.each { mapping ->
+                    // match method and mapping
                     def controllerMethod = controllerMethods.find { it.name == mapping.name }
 
+                    // parse the methods annotations for details about the api resource
+                    apiInfo.resources.addAll(parser.parse(controllerMethod, mapping))
+
+                    // find all request and response objects that are used for this api method, add them to the list of available objects
                     objects.extractObjectsInfoFromResource(metadataReader.getAnnotation(UberDocResource).inMethod(controllerMethod))
-                    apiInfo.resources.addAll(
-                            new UberDocResourceParser(controllerReader, messageSource)
-                                    .parse(controllerMethod, mapping)
-                    )
                 }
             }
         }

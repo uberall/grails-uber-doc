@@ -1,6 +1,6 @@
 package sample
 
-class Person {
+class Persona {
 
     String firstName
     String lastName

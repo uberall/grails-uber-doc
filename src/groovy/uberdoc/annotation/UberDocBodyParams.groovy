@@ -6,9 +6,10 @@ import java.lang.annotation.RetentionPolicy
 import java.lang.annotation.Target
 
 /**
- * Describes classes used as request or response objects.
- * @see UberDocResource
+ * The sole purpose of this annotation is to allow the usage of a collection of {@link UberDocQueryParam}.
  */
-@Target(ElementType.TYPE)
+@Target([ElementType.METHOD, ElementType.TYPE])
 @Retention(RetentionPolicy.RUNTIME)
-@interface UberDocModel {}
+@interface UberDocBodyParams {
+    UberDocBodyParam[] value()
+}

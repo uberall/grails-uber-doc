@@ -20,14 +20,4 @@ import java.lang.annotation.Target
      */
     String name()
 
-    /**
-     * Describe the URI param usage. E.g.: {id} identifies the location for which the sync is started.
-     */
-    String description() default ""
-
-    /**
-     * A sample valid value for the header, for illustration purposes. E.g.: 4
-     */
-    String sampleValue() default ""
-
 }

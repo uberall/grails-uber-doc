@@ -1,25 +1,25 @@
 package sample
 
-import uberdoc.annotation.UberDocImplicitProperties
-import uberdoc.annotation.UberDocImplicitProperty
+import uberdoc.annotation.UberDocExplicitProperties
+import uberdoc.annotation.UberDocExplicitProperty
 import uberdoc.annotation.UberDocModel
 import uberdoc.annotation.UberDocProperty
 
-@UberDocModel(description = "This class does something...")
-@UberDocImplicitProperties([
-        @UberDocImplicitProperty(name = "inherited", type = String, description = "Just an inherited property"),
-        @UberDocImplicitProperty(name = "id", type = Long, description = "Identifies a Pod")
+@UberDocModel
+@UberDocExplicitProperties([
+        @UberDocExplicitProperty(name = "inherited", type = String),
+        @UberDocExplicitProperty(name = "id", type = Long)
 ])
-@UberDocImplicitProperty(name = "dateCreated", type = Date, description = "When the Pod was created")
+@UberDocExplicitProperty(name = "dateCreated", type = Date)
 class Pod extends AbstractObject {
 
-    @UberDocProperty(description = "license is used for ...", sampleValue = "DBNG3r", required = true)
+    @UberDocProperty(required = true)
     String license
 
-    @UberDocProperty(description = "botName is used for movies credits ...", sampleValue = "C3PO")
+    @UberDocProperty
     String botName
 
-    static hasOne = [jedi: Person]
+    static hasOne = [jedi: Persona]
 
     static constraints = {
         license blank: true, nullable: false

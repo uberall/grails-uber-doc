@@ -6,12 +6,13 @@ import java.lang.annotation.RetentionPolicy
 import java.lang.annotation.Target
 
 /**
- * Documents information about query parameters used in a resources URL. For instance, it can be used to document
- * pagination parameters within a URL like /api/dogs/?max=10&offset=3.
+ * Documents information about body parameters used in a POST or PATCH request.
+ *
+ * This can be used for requests where no complete object is availabe / needs to be sent.
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@interface UberDocQueryParam {
+@interface UberDocBodyParam {
 
     /**
      * Name of the query parameter. E.g.: offset
@@ -22,5 +23,10 @@ import java.lang.annotation.Target
      * Indicates whether a query param should be informed when interacting with the API.
      */
     boolean required() default true
+
+    /**
+     * The property's type (e.g.: Long)
+     */
+    Class type() default String
 
 }

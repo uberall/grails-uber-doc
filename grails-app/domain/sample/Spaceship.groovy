@@ -6,5 +6,5 @@ class Spaceship {
     String shipData
     Planet planet
 
-    static hasOne = [captain: Person]
+    static hasOne = [captain: Persona]
 }

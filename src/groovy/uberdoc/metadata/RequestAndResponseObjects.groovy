@@ -1,12 +1,9 @@
 package uberdoc.metadata
 
-import uberdoc.annotation.UberDocImplicitProperties
-import uberdoc.annotation.UberDocImplicitProperty
-import uberdoc.annotation.UberDocModel
-import uberdoc.annotation.UberDocProperty
 import groovy.util.logging.Log4j
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
+import uberdoc.annotation.*
 import uberdoc.messages.MessageReader
 
 import java.lang.reflect.Field
@@ -27,7 +24,7 @@ class RequestAndResponseObjects {
         messageReader = new MessageReader(messageSource, locale)
     }
 
-    void extractObjectsInfoFromResource(def uberDocResource){
+    void extractObjectsInfoFromResource(UberDocResource uberDocResource){
 
         if(!uberDocResource){
             return
@@ -39,10 +36,6 @@ class RequestAndResponseObjects {
 
         if(uberDocResource.responseObject() && !(uberDocResource.responseObject() in Closure)){
             requestAndResponseClasses << uberDocResource.responseObject()
-        }
-
-        if(uberDocResource.responseCollectionOf() && !(uberDocResource.responseCollectionOf() in Closure)){
-            requestAndResponseClasses << uberDocResource.responseCollectionOf()
         }
 
         if(uberDocResource.object() && !(uberDocResource.object() in Closure)){
@@ -80,21 +73,19 @@ class RequestAndResponseObjects {
             log.info("reading from $clazz")
 
             // collect class information
-            UberDocModel modelAnnotation = clazz.getAnnotation(UberDocModel)
-            String customDescription = messageReader.get("uberDoc.${clazz.simpleName}.description")
+            String customDescription = messageReader.get("uberDoc.object.${clazz.simpleName}.description")
 
             Map clazzInfo = [:]
             clazzInfo << [name: clazz.simpleName]
-            clazzInfo << [description: modelAnnotation.description() ?: customDescription]
+            clazzInfo << [description: customDescription]
             clazzInfo << [properties: []]
 
             GrailsDomainClass domainClass = grailsApplication.getDomainClass(clazz.name) as GrailsDomainClass
             def domainClassConstraints = domainClass?.getConstrainedProperties()
 
-            // go over each field that is annotated and grab information from it
-            getAllFields(clazz).each { Field field ->
+            clazz.getProperties().declaredFields.findAll { field ->
                 if (field.isAnnotationPresent(UberDocProperty)) {
-                    Map fieldInformation = getProperties(field, domainClassConstraints)
+                    Map fieldInformation = getProperties(field, domainClassConstraints, clazz.simpleName)
                     clazzInfo.properties << fieldInformation
                 }
             }
@@ -107,21 +98,36 @@ class RequestAndResponseObjects {
         return result
     }
 
-    private Map getProperties(Field field, def classConstraints) {
+    private Map getProperties(Field field, def classConstraints, String objectName) {
         UberDocProperty propertyAnnotation = field.getAnnotation(UberDocProperty)
 
         // grab info from annotation
         Map propertyMap = [:]
         def constraints = []
-        String customDescription = messageReader.get("uberDoc.${field.name}.description")
-        String customSampleValue = messageReader.get("uberDoc.${field.name}.sampleValue")
+        String customDescription = messageReader.get("uberDoc.object.${objectName}.${field.name}.description")
+        String customSampleValue = messageReader.get("uberDoc.object.${objectName}.${field.name}.sampleValue")
+
 
         propertyMap << [name: field.name]
-        propertyMap << [type: field.type.simpleName]
-        propertyMap << [description: propertyAnnotation.description() ?: customDescription]
-        propertyMap << [sampleValue: propertyAnnotation.sampleValue() ?: customSampleValue]
+        propertyMap << [description: customDescription]
+        propertyMap << [sampleValue: customSampleValue]
         propertyMap << [required: propertyAnnotation.required()]
 
+        // get the type, also for Sets
+        log.info("working on $objectName and ${field.name()}")
+        if (field.type.name.endsWith("Set") || field.type.name.endsWith("List")) {
+            if (field.signature) {
+                propertyMap << [type: field.signature.split("/").last().split(";").first()]
+            } else {
+                log.error("No type defined for collection uberDoc.object.${objectName}.${field.name}")
+                propertyMap << [type: "UNDEFINED"]
+            }
+
+
+            propertyMap << [isCollection: true]
+        } else {
+            propertyMap << [type: field.type.simpleName]
+        }
         // read constraints
         if(classConstraints){
             classConstraints.entrySet().findAll{it.key == field.name}.each { constrainedProperty ->
@@ -130,13 +136,16 @@ class RequestAndResponseObjects {
                         constraints << [constraint: hibernateConstraint.name, value: hibernateConstraint.constraintParameter]
                     }
                     else{
-                        constraints << [constraint: "custom", value: "see object documentation"]
+                        constraints << [constraint: "custom", value: "uberDoc.object.${objectName}.constraints.custom"]
                     }
                 }
             }
         }
 
         propertyMap << [constraints: constraints]
+
+        // check, if we should expose the id in case of a domain class
+
 
         return propertyMap
     }
@@ -146,32 +155,39 @@ class RequestAndResponseObjects {
         String customDescription = null
         String customSampleValue = null
 
-        UberDocImplicitProperty implicitProperty = clazz.getAnnotation(UberDocImplicitProperty)
-        UberDocImplicitProperties implicitProperties = clazz.getAnnotation(UberDocImplicitProperties)
+        UberDocExplicitProperty implicitProperty = clazz.getAnnotation(UberDocExplicitProperty)
+        UberDocExplicitProperties implicitProperties = clazz.getAnnotation(UberDocExplicitProperties)
 
         if(implicitProperty){
-            customDescription = messageReader.get("uberDoc.${implicitProperty.name()}.description")
-            customSampleValue = messageReader.get("uberDoc.${implicitProperty.name()}.sampleValue")
+            customDescription = messageReader.get("uberDoc.object.${clazz.simpleName}.${implicitProperty.name()}.description")
+            customSampleValue = messageReader.get("uberDoc.object.${clazz.simpleName}.${implicitProperty.name()}.sampleValue")
 
             result << [
                     name: implicitProperty.name(),
                     type: implicitProperty.type().simpleName,
-                    description: implicitProperty.description() ?: customDescription,
-                    sampleValue: implicitProperty.sampleValue() ?: customSampleValue,
+                    description: customDescription,
+                    sampleValue: customSampleValue,
                     required: implicitProperty.required()
             ]
         }
 
+        def explicitNames = clazz.getProperties().declaredFields.name
+
         if(implicitProperties){
             implicitProperties.value().each { impl ->
-                customDescription = messageReader.get("uberDoc.${impl.name()}.description")
-                customSampleValue = messageReader.get("uberDoc.${impl.name()}.sampleValue")
+
+                if (explicitNames.contains(impl.name())) {
+                    log.error("Skipping creation of explicit parameter uberDoc.object.${clazz.simpleName}.${impl.name()}, as the actual property exists as well.")
+                }
+
+                customDescription = messageReader.get("uberDoc.object.${clazz.simpleName}.${impl.name()}.description")
+                customSampleValue = messageReader.get("uberDoc.object.${clazz.simpleName}.${impl.name()}.sampleValue")
 
                 result << [
                         name: impl.name(),
                         type: impl.type().simpleName,
-                        description: impl.description() ?: customDescription,
-                        sampleValue: impl.sampleValue() ?: customSampleValue,
+                        description: customDescription,
+                        sampleValue: customSampleValue,
                         required: impl.required()
                 ]
             }
@@ -180,12 +196,4 @@ class RequestAndResponseObjects {
         return result
     }
 
-    // @see http://stackoverflow.com/questions/1042798/retrieving-the-inherited-attribute-names-values-using-java-reflection
-    private List<Field> getAllFields(Class<?> type) {
-        List<Field> fields = new ArrayList<Field>();
-        for (Class<?> c = type; c != null; c = c.getSuperclass()) {
-            fields.addAll(Arrays.asList(c.getDeclaredFields()));
-        }
-        return fields;
-    }
 }

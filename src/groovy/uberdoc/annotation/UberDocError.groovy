@@ -16,6 +16,8 @@ import java.lang.annotation.Target
 
     /**
      * API internal error code, used to identify error situations within an API documentation. E.g.: UB-ERR-123
+     *
+     * There can be multiple errors with same http status code but different error codes.
      */
     String errorCode() default ""
 
@@ -23,10 +25,5 @@ import java.lang.annotation.Target
      * HTTP error code associated with this error. E.g.: 404 (Not Found)
      */
     int httpCode()
-
-    /**
-     * Description of the error. May include information such as expected pre-conditions, how to recover from it, etc.
-     */
-    String description() default ""
 
 }

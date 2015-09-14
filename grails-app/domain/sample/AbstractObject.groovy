@@ -7,7 +7,7 @@ import uberdoc.annotation.UberDocProperty
  */
 abstract class AbstractObject {
 
-    @UberDocProperty(description = "shared is used for ...", sampleValue = "sherd")
+    @UberDocProperty
     String shared
 
     String something

@@ -20,15 +20,14 @@ import java.lang.annotation.Target
     String title() default ""
 
     /**
-     * The RESTful resource description, its purpose, usage, etc.
-     * @return
-     */
-    String description() default ""
-
-    /**
      * Class used as request object. Not mandatory if <code>object</code> param is set.
      */
     Class requestObject() default {}
+
+    /**
+     * Describes whether the API expects a single object or a collection of objects.
+     */
+    boolean requestIsCollection() default false
 
     /**
      * Class used as response object. Not mandatory if <code>object</code> param is set.
@@ -36,9 +35,9 @@ import java.lang.annotation.Target
     Class responseObject() default {}
 
     /**
-     * Indicates that the resource returns a collection of this class/
+     * Describes whether the API returns a single object or a collection of objects.
      */
-    Class responseCollectionOf() default {}
+    boolean responseIsCollection() default false
 
     /**
      * Class used as both request and resource object.

@@ -36,10 +36,11 @@ class GrailsReader {
 
         def resources = []
 
+        // take the first valid mapping for each mapped action; this will correspond to the last found most specific one in the URL mappings
         mappedActions.each { action ->
             if(action.actionName in Map){
-                for(Map.Entry entry: action.actionName.entrySet()){
-                    if(!action.parameterValues.action?.deprecated){
+                for(Map.Entry entry: action.actionName.entrySet()  ){
+                    if(!action.parameterValues.action?.deprecated && !(resources.find { it.method == entry.key && it.name == entry.value})){
                         resources << [name: entry.value, uri: action.toString(), method: entry.key]
                     }
                 }
