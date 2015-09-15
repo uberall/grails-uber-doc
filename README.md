@@ -49,9 +49,9 @@ Identifies a controller that defines API resources that should be documented.
 ##### @UberDocResource:
 Identifies a controller method (aka resource) to be documented. Within an `UberDocController`, if a given method on a controller is not meant to have its documentation made available, just don't annotate it. Parameters are `requestObject`, `responseObject`, `requestIsCollection`, and `responseIsCollection`.
 ##### @UberDocError(s):
-Provides information about errors to be expected when interacting with a given resource. Parameters are `httpCode` and `errorCode`.
+Provides information about errors a resource can signal to the user. Parameters are `httpCode` and `errorCode`.
 ##### @UberDocHeader(s):
-Provides information about headers to be used when interacting with a given resource. When used at controller level, defines documentation to be applied to every method within that controller. Parameters are `name` and `required`.
+Provides information about headers to be used when interacting with a given resource. Parameters are `name` and `required`.
 ##### @UberDocUriParam(s):
 Provides information about URI parameters used by a resource (e.g.: /api/dogs/$id/children/$otherId/). Parameters are `name` and `required`. `name` will be used for displaying about a specific parameter in the URI. Note that this is positional, meaning, an annotation about $id should be used before an annotation about $otherId to be applied to the resource's URI correctly.
 ##### @UberDocQueryParam(s):

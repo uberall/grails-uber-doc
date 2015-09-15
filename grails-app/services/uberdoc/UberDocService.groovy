@@ -3,11 +3,12 @@ package uberdoc
 import org.codehaus.groovy.grails.commons.GrailsClass
 import org.codehaus.groovy.grails.web.mapping.UrlMappings
 import uberdoc.annotation.UberDocResource
-import uberdoc.metadata.ControllerReader
 import uberdoc.metadata.GrailsReader
 import uberdoc.metadata.MetadataReader
 import uberdoc.metadata.RequestAndResponseObjects
 import uberdoc.parser.UberDocResourceParser
+
+import java.lang.reflect.Method
 
 /**
  * This service is responsible for parsing @UberDoc annotations available in source code and structure it as a map,
@@ -24,7 +25,6 @@ class UberDocService {
     List controllerMethods
     List controllerMappings
 
-    ControllerReader controllerReader
     MetadataReader metadataReader
     GrailsReader grailsReader
 
@@ -58,24 +58,27 @@ class UberDocService {
 
         for (GrailsClass controller : grailsReader.controllers) {
 
-            def parser = new UberDocResourceParser(controller, messageSource)
+            def parser = new UberDocResourceParser(messageSource)
 
             // go over all controllers with uberDoc annotations
-            if (parser.controllerSupported) {
-                controllerMethods = grailsReader.getMethodsFrom(controller)
-                controllerMappings = grailsReader.extractUrlMappingsFor(controller)
+            controllerMethods = grailsReader.getMethodsFrom(controller)
+            controllerMappings = grailsReader.extractUrlMappingsFor(controller)
 
+            controllerMethods.each { Method method ->
+                // match method and mapping
+                def mapping = controllerMappings.find { it.name == method.name }
 
-                controllerMappings.each { mapping ->
-                    // match method and mapping
-                    def controllerMethod = controllerMethods.find { it.name == mapping.name }
-
-                    // parse the methods annotations for details about the api resource
-                    apiInfo.resources.addAll(parser.parse(controllerMethod, mapping))
-
-                    // find all request and response objects that are used for this api method, add them to the list of available objects
-                    objects.extractObjectsInfoFromResource(metadataReader.getAnnotation(UberDocResource).inMethod(controllerMethod))
+                // if there is no mapping, there's no point int extracting resources
+                if (!mapping) {
+                    log.error("Cannot find mapping for $method -> ignored.")
+                    return
                 }
+
+                // parse the methods annotations for details about the api resource
+                apiInfo.resources.addAll(parser.parse(method, mapping))
+
+                // find all request and response objects that are used for this api method, add them to the list of available objects
+                objects.extractObjectsInfoFromResource(metadataReader.getAnnotation(UberDocResource).inMethod(method))
             }
         }
 

@@ -3,6 +3,11 @@ package uberdoc.metadata
 import grails.util.GrailsNameUtils
 import org.codehaus.groovy.grails.commons.GrailsClass
 import org.codehaus.groovy.grails.web.mapping.UrlMappings
+import uberdoc.annotation.UberDocController
+import uberdoc.annotation.UberDocResource
+
+import java.lang.annotation.Annotation
+import java.lang.reflect.Method
 
 /**
  * This class provides higher class methods to interact with Grails configurations and metadata.
@@ -18,11 +23,11 @@ class GrailsReader {
     }
 
     GrailsClass[] getControllers() {
-        return grailsApplication.controllerClasses
+        return grailsApplication.controllerClasses.findAll { it.clazz.annotations.find { Annotation a -> a.annotationType() == UberDocController} }
     }
 
-    List getMethodsFrom(GrailsClass controller) {
-        return controller.clazz.methods
+    static List getMethodsFrom(GrailsClass controller) {
+        return controller.clazz.methods.findAll { Method m -> m.annotations && m.annotations.find { Annotation a -> a.annotationType() == UberDocResource}}
     }
 
     List extractUrlMappingsFor(GrailsClass controller) {

@@ -13,8 +13,6 @@ class MethodReader {
     String uri
     String uriMessageKey
     MetadataReader reader
-    List<Map> genericErrors
-    List<Map> genericHeaders
     Locale locale
     MessageReader messageReader
     String httpMethod
@@ -28,20 +26,6 @@ class MethodReader {
         messageReader = new MessageReader(messageSource, locale)
 
         formatUriStrings(mappingUri, mappingMethod)
-    }
-
-    MethodReader useGenericErrors(def g) {
-        if (g) {
-            genericErrors = g
-        }
-        return this
-    }
-
-    MethodReader useGenericHeaders(def g) {
-        if (g) {
-            genericHeaders = g
-        }
-        return this
     }
 
     MethodReader formatUriStrings(def u, def httpMethod) {
@@ -78,6 +62,10 @@ class MethodReader {
             messageReader = new MessageReader(messageSource, locale)
         }
         return this
+    }
+
+    String getBaseMessageKey() {
+        return "uberDoc.resource.${uriMessageKey}"
     }
 
     String getTitle() {
@@ -127,10 +115,6 @@ class MethodReader {
             }
         }
 
-        if (genericErrors) {
-            ret.addAll(genericErrors)
-        }
-
         return ret
     }
 
@@ -155,10 +139,6 @@ class MethodReader {
             methodHeaders.value().each {
                 ret << parseHeader(it)
             }
-        }
-
-        if (genericHeaders) {
-            ret.addAll(genericHeaders)
         }
 
         return ret

@@ -2,10 +2,6 @@ package sample
 
 import uberdoc.annotation.*
 
-@UberDocHeaders([
-        @UberDocHeader(name = "publicToken"),
-        @UberDocHeader(name = "other token")
-])
 @UberDocController
 class PodController { // this example simulates a CRUD-ish controller
 

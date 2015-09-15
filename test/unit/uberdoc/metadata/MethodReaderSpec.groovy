@@ -12,34 +12,6 @@ class MethodReaderSpec extends Specification {
         messageSourceMock = Mock()
     }
 
-    def "useGenericHeaders works properly"() {
-        given:
-        MethodReader reader = new MethodReader(PodController.methods.find {
-            it.name == 'get'
-        }, messageSourceMock, '/api/pods/(*)', 'GET')
-
-        when:
-        def r = reader.useGenericHeaders([[name: "header"]])
-
-        then:
-        r == reader
-        [[name: "header"]] == reader.genericHeaders
-    }
-
-    def "useGenericErrors works properly"() {
-        given:
-        MethodReader reader = new MethodReader(PodController.methods.find {
-            it.name == 'get'
-        }, messageSourceMock, '/api/pods/(*)', 'GET')
-
-        when:
-        def r = reader.useGenericErrors([[name: "header"]])
-
-        then:
-        r == reader
-        [[name: "header"]] == reader.genericErrors
-    }
-
     def "useURI works properly"() {
         when:
         MethodReader reader = new MethodReader(PodController.methods.find {
@@ -204,20 +176,6 @@ class MethodReaderSpec extends Specification {
         "sampleValue in message" == headers[0].sampleValue
     }
 
-    def "getHeaders takes generic headers into consideration properly"() {
-        when:
-        MethodReader reader = new MethodReader(PodController.methods.find {
-            it.name == 'list'
-        }, messageSourceMock, '/api/pods/', 'GET')
-                .useGenericHeaders([[name: "value"]])
-
-        then:
-        reader.headers
-        2 == reader.headers.size()
-        "hdr" == reader.headers[0].name
-        "value" == reader.headers[1].name
-    }
-
     def "getHeaders returns nothing if method does not have the annotation"() {
         when:
         MethodReader reader = new MethodReader(PodController.methods.find {
@@ -226,19 +184,6 @@ class MethodReaderSpec extends Specification {
 
         then:
         !reader.headers
-    }
-
-    def "getHeaders uses generic headers even if method does not have the annotation"() {
-        when:
-        MethodReader reader = new MethodReader(PodController.methods.find {
-            it.name == 'delete'
-        }, messageSourceMock, '/api/pods/(*)', 'DELETE')
-                .useGenericHeaders([[name: "value"]])
-
-        then:
-        reader.headers
-        1 == reader.headers.size()
-        "value" == reader.headers[0].name
     }
 
     def "getUriParams works properly"() {

@@ -1,7 +1,5 @@
 package uberdoc.parser
 
-import org.codehaus.groovy.grails.commons.GrailsClass
-import uberdoc.metadata.ControllerReader
 import uberdoc.metadata.MethodReader
 
 /**
@@ -10,27 +8,18 @@ import uberdoc.metadata.MethodReader
  */
 class UberDocResourceParser {
     MethodReader methodReader
-    List<Map> genericErrors
     List<Map> genericHeaders
-    ControllerReader controllerReader
     def messageSource
 
-    UberDocResourceParser(GrailsClass controller, def ms) {
+    UberDocResourceParser(def ms) {
         messageSource = ms
-        controllerReader = new ControllerReader(controller, messageSource)
-        genericHeaders = controllerReader.headers
-    }
-
-    boolean isControllerSupported() {
-        this.controllerReader.isControllerSupported()
     }
 
     Map parse(def controllerMethod, def mapping) {
         Map restfulResource = [:]
         methodReader = new MethodReader(controllerMethod, messageSource, mapping.uri, mapping.method)
-                .useGenericErrors(genericErrors)
-                .useGenericHeaders(genericHeaders)
 
+        restfulResource.baseMessageKey = methodReader.baseMessageKey
         restfulResource.title = methodReader.title
         restfulResource.description = methodReader.description
         restfulResource.uri = methodReader.uri
