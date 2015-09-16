@@ -29,4 +29,14 @@ import java.lang.annotation.Target
      */
     Class type() default String
 
+    /**
+     * Description of the query parameter. May include information about its usage, situations where its mandatory, etc.
+     */
+    String description() default ""
+
+    /**
+     * Sample value for this parameter, to be provided for illustration purposes.
+     */
+    String sampleValue() default ""
+
 }

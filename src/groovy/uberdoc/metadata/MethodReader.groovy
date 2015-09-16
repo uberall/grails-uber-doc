@@ -69,11 +69,15 @@ class MethodReader {
     }
 
     String getTitle() {
-        return messageReader.get("uberDoc.resource.${uriMessageKey}.title")
+        def uberDocResource = reader.getAnnotation(UberDocResource).inMethod(method)
+        def customTitle = messageReader.get("uberDoc.${uriMessageKey}.title")
+        return customTitle ?: uberDocResource?.title()
     }
 
     String getDescription() {
-        return messageReader.get("uberDoc.resource.${uriMessageKey}.description")
+        def uberDocResource = reader.getAnnotation(UberDocResource).inMethod(method)
+        def customDescription = messageReader.get("uberDoc.resource.${uriMessageKey}.description")
+        return customDescription ?: uberDocResource?.description()
     }
 
     String getRequestObject() {
@@ -148,9 +152,9 @@ class MethodReader {
         if (!hdr) {
             return [:]
         }
-        def description = messageReader.get("uberDoc.resource.${uriMessageKey}.header.${hdr.name()}.description")
-        def sampleValue = messageReader.get("uberDoc.resource.${uriMessageKey}.header.${hdr.name()}.sampleValue")
-        return [name: hdr.name(), description: description, required: hdr.required(), sampleValue: sampleValue]
+        def customDescription = messageReader.get("uberDoc.resource.${uriMessageKey}.header.${hdr.name()}.description")
+        def customSampleValue = messageReader.get("uberDoc.resource.${uriMessageKey}.header.${hdr.name()}.sampleValue")
+        return [name: hdr.name(), description: customDescription ?: hdr.description(), required: hdr.required(), sampleValue: customSampleValue ?: hdr.sampleValue()]
     }
 
     List<Map> getUriParams() {
@@ -175,9 +179,9 @@ class MethodReader {
         if (!urip) {
             return [:]
         }
-        def description = messageReader.get("uberDoc.resource.${uriMessageKey}.uriParam.${urip.name()}.description")
-        def sampleValue = messageReader.get("uberDoc.resource.${uriMessageKey}.uriParam.${urip.name()}.sampleValue")
-        return [name: urip.name(), description: description, sampleValue: sampleValue]
+        def customDescription = messageReader.get("uberDoc.resource.${uriMessageKey}.uriParam.${urip.name()}.description")
+        def customSampleValue = messageReader.get("uberDoc.resource.${uriMessageKey}.uriParam.${urip.name()}.sampleValue")
+        return [name: urip.name(), description: customDescription ?: urip.description(), sampleValue: customSampleValue ?: urip.sampleValue()]
     }
 
     List<Map> getQueryParams() {
@@ -202,10 +206,14 @@ class MethodReader {
         if (!qp) {
             return [:]
         }
+
+        def customDescription = messageReader.get("uberDoc.resource.${uriMessageKey}.queryParam.${qp.name()}.description")
+        def customSampleValue = messageReader.get("uberDoc.resource.${uriMessageKey}.queryParam.${qp.name()}.sampleValue")
+
         return [
                 name       : qp.name(),
-                description: messageReader.get("uberDoc.resource.${uriMessageKey}.queryParam.${qp.name()}.description"),
-                sampleValue: messageReader.get("uberDoc.resource.${uriMessageKey}.queryParam.${qp.name()}.sampleValue"),
+                description: customDescription ?: qp.description(),
+                sampleValue: customSampleValue ?: qp.sampleValue(),
                 required   : qp.required(),
         ]
     }
@@ -232,10 +240,14 @@ class MethodReader {
         if (!bp) {
             return [:]
         }
+
+        def customDescription = messageReader.get("uberDoc.resource.${uriMessageKey}.bodyParam.${bp.name()}.description")
+        def customSampleValue = messageReader.get("uberDoc.resource.${uriMessageKey}.bodyParam.${bp.name()}.sampleValue")
+
         return [
                 name       : bp.name(),
-                description: messageReader.get("uberDoc.resource.${uriMessageKey}.bodyParam.${bp.name()}.description"),
-                sampleValue: messageReader.get("uberDoc.resource.${uriMessageKey}.bodyParam.${bp.name()}.sampleValue"),
+                description: customDescription ?: bp.description(),
+                sampleValue: customSampleValue ?: bp.sampleValue(),
                 type       : bp.type().simpleName,
                 required   : bp.required(),
         ]

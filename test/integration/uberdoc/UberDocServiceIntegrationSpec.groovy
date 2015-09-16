@@ -41,33 +41,33 @@ class UberDocServiceIntegrationSpec extends IntegrationSpec {
         1 == m.resources[1].errors.size()
         0 == m.resources[1].queryParams.size()
         1 == m.resources[1].uriParams.size()
-        
-        "GET" == m.resources[2].method
-        '/api/pods' == m.resources[2].uri
-        !m.resources[2].requestObject
+
+        "POST" == m.resources[2].method
+        "/api/pods" == m.resources[2].uri
+        "Pod" == m.resources[2].requestObject
         "Pod" == m.resources[2].responseObject
         1 == m.resources[2].headers.size()
-        0 == m.resources[2].errors.size()
-        2 == m.resources[2].queryParams.size()
-        0 == m.resources[2].uriParams.size()
-
-        "DELETE" == m.resources[3].method
-        '/api/pods/$id' == m.resources[3].uri
+        1 == m.resources[2].errors.size()
+        0 == m.resources[2].queryParams.size()
+        3 == m.resources[2].uriParams.size()
+        
+        "GET" == m.resources[3].method
+        '/api/pods' == m.resources[3].uri
         !m.resources[3].requestObject
-        !m.resources[3].responseObject
-        0 == m.resources[3].headers.size()
+        "Pod" == m.resources[3].responseObject
+        1 == m.resources[3].headers.size()
         0 == m.resources[3].errors.size()
-        0 == m.resources[3].queryParams.size()
-        1 == m.resources[3].uriParams.size()
+        2 == m.resources[3].queryParams.size()
+        0 == m.resources[3].uriParams.size()
 
-        "POST" == m.resources[4].method
-        "/api/pods" == m.resources[4].uri
-        "Pod" == m.resources[4].requestObject
-        "Pod" == m.resources[4].responseObject
-        1 == m.resources[4].headers.size()
-        1 == m.resources[4].errors.size()
+        "DELETE" == m.resources[4].method
+        '/api/pods/$id' == m.resources[4].uri
+        !m.resources[4].requestObject
+        !m.resources[4].responseObject
+        0 == m.resources[4].headers.size()
+        0 == m.resources[4].errors.size()
         0 == m.resources[4].queryParams.size()
-        3 == m.resources[4].uriParams.size()
+        1 == m.resources[4].uriParams.size()
 
         "PUT" == m.resources[5].method
         '/api/pods/$id' == m.resources[5].uri
