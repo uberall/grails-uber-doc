@@ -19,8 +19,23 @@ import java.lang.annotation.Target
     String name()
 
     /**
+     * Description of the query parameter. May include information about its usage, situations where its mandatory, etc.
+     */
+    String description() default ""
+
+    /**
      * Indicates whether a query param should be informed when interacting with the API.
      */
     boolean required() default true
+
+    /**
+     * Sample value for this parameter, to be provided for illustration purposes.
+     */
+    String sampleValue() default ""
+
+    /**
+     * Indicates whether this parameter accepts a collection of values.
+     */
+    boolean isCollection() default false
 
 }

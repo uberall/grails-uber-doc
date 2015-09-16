@@ -11,4 +11,12 @@ import java.lang.annotation.Target
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@interface UberDocModel {}
+@interface UberDocModel {
+
+    /**
+     * Provides information about the class used as request/response object, such as its purpose, situations where its
+     * not mandatory, etc.
+     */
+    String description() default ""
+
+}

@@ -26,4 +26,9 @@ import java.lang.annotation.Target
      */
     int httpCode()
 
+    /**
+     * Description of the error. May include information such as expected pre-conditions, how to recover from it, etc.
+     */
+    String description() default ""
+
 }

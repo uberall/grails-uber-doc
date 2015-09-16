@@ -20,6 +20,12 @@ import java.lang.annotation.Target
     String title() default ""
 
     /**
+     * The RESTful resource description, its purpose, usage, etc.
+     * @return
+     */
+    String description() default ""
+
+    /**
      * Class used as request object. Not mandatory if <code>object</code> param is set.
      */
     Class requestObject() default {}

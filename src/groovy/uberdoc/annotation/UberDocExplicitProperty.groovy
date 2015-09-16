@@ -23,4 +23,19 @@ import java.lang.annotation.Target
      * Defines whether the property is mandatory.
      */
     boolean required() default false
+
+    /**
+     * The implicit property's type, when it's a collection (e.g.: collectionOfType = String means it's a Collection<String>)
+     */
+    Class collectionOfType() default String
+
+    /**
+     * An example value of a request/response attribute.
+     */
+    String sampleValue() default ""
+
+    /**
+     * Describes the attribute, its purpose, custom validations, etc.
+     */
+    String description() default ""
 }
