@@ -102,7 +102,9 @@ class RequestAndResponseObjects {
         def properties = []
 
         if(clazz.superclass != Object) {
-            properties << getDeclaredFields(clazz.superclass)
+            def fromSuper = getDeclaredFields(clazz.superclass)
+            if(fromSuper)
+                properties.addAll(fromSuper)
         }
 
         GrailsDomainClass domainClass = grailsApplication.getDomainClass(clazz.name) as GrailsDomainClass
@@ -116,7 +118,7 @@ class RequestAndResponseObjects {
         }
 
         properties << getImplicitProperties(clazz)
-        properties
+        properties.grep()
     }
 
     private Map getProperties(Field field, def classConstraints, String objectName) {
