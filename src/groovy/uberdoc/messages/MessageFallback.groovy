@@ -12,7 +12,7 @@ class MessageFallback {
         messageKey = messageKey.replace(" ", ".")
         def valueFromMessageSource = messageReader.get(messageKey)
 
-        if(annotatedValue && (!valueFromMessageSource || valueFromMessageSource == messageKey)){
+        if(annotatedValue && (!valueFromMessageSource || valueFromMessageSource == messageKey || valueFromMessageSource.contains(messageKey))){
             return annotatedValue
         }
         return valueFromMessageSource

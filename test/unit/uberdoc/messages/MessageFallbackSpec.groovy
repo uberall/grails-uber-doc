@@ -64,6 +64,19 @@ class MessageFallbackSpec extends Specification {
         1 * messageReaderMock.get('message.key') >> "message.key"
     }
 
+    def "if annotatedValue is not null, and messageSource returns a link to the message key, fallbackToMessageSourceIfAnnotationDoesNotOverride returns what is used in annotation"(){
+        given:
+        String messageKey = "message.key"
+        String annotatedValue = "custom value"
+
+        when:
+        String msg = fallback.fallbackToMessageSourceIfAnnotationDoesNotOverride(messageKey, annotatedValue)
+
+        then:
+        msg == "custom value"
+        1 * messageReaderMock.get('message.key') >> "<a href=http://localhost:8080/admin/messages/?search=message.key</a>"
+    }
+
     def "if annotatedValue is not null, and messageSource returns null, fallbackToMessageSourceIfAnnotationDoesNotOverride returns what is used in annotation"(){
         given:
         String messageKey = "message.key"
