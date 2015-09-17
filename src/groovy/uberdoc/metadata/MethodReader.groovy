@@ -1,6 +1,7 @@
 package uberdoc.metadata
 
 import uberdoc.annotation.*
+import uberdoc.messages.MessageFallback
 import uberdoc.messages.MessageReader
 
 /**
@@ -15,6 +16,7 @@ class MethodReader {
     MetadataReader reader
     Locale locale
     MessageReader messageReader
+    MessageFallback fallback
     String httpMethod
 
     MethodReader(m, ms, mappingUri, mappingMethod) {
@@ -24,12 +26,12 @@ class MethodReader {
 
         locale = Locale.default
         messageReader = new MessageReader(messageSource, locale)
+        fallback = new MessageFallback(messageReader)
 
         formatUriStrings(mappingUri, mappingMethod)
     }
 
     MethodReader formatUriStrings(def u, def httpMethod) {
-
 
         if (u) {
             // add the URI parameters to the URI as well
@@ -53,6 +55,7 @@ class MethodReader {
 
             uriMessageKey = "$uriMessageKey.$httpMethod"
         }
+
         return this
     }
 
@@ -68,16 +71,14 @@ class MethodReader {
         return "uberDoc.resource.${uriMessageKey}"
     }
 
-    String getTitle() {
+    String getResourceTitle() {
         def uberDocResource = reader.getAnnotation(UberDocResource).inMethod(method)
-        def customTitle = messageReader.get("uberDoc.${uriMessageKey}.title")
-        return customTitle ?: uberDocResource?.title()
+        return fallbackToMessageSourceIfAnnotationDoesNotOverride("uberDoc.${uriMessageKey}.title", uberDocResource?.title())
     }
 
-    String getDescription() {
+    String getResourceDescription() {
         def uberDocResource = reader.getAnnotation(UberDocResource).inMethod(method)
-        def customDescription = messageReader.get("uberDoc.resource.${uriMessageKey}.description")
-        return customDescription ?: uberDocResource?.description()
+        return fallbackToMessageSourceIfAnnotationDoesNotOverride("uberDoc.resource.${uriMessageKey}.description", uberDocResource?.description())
     }
 
     String getRequestObject() {
@@ -126,8 +127,11 @@ class MethodReader {
         if (!err) {
             return [:]
         }
-        def description = messageReader.get("uberDoc.resource.${uriMessageKey}.error.${err.httpCode()}.description")
-        return [errorCode: err.errorCode(), httpCode: err.httpCode(), description: description]
+        return [
+                errorCode: err.errorCode(),
+                httpCode: err.httpCode(),
+                description: fallbackToMessageSourceIfAnnotationDoesNotOverride("uberDoc.resource.${uriMessageKey}.error.${err.httpCode()}.description", err.description())
+        ]
     }
 
     List<Map> getHeaders() {
@@ -152,9 +156,12 @@ class MethodReader {
         if (!hdr) {
             return [:]
         }
-        def customDescription = messageReader.get("uberDoc.resource.${uriMessageKey}.header.${hdr.name()}.description")
-        def customSampleValue = messageReader.get("uberDoc.resource.${uriMessageKey}.header.${hdr.name()}.sampleValue")
-        return [name: hdr.name(), description: customDescription ?: hdr.description(), required: hdr.required(), sampleValue: customSampleValue ?: hdr.sampleValue()]
+        return [
+                name: hdr.name(),
+                description: fallbackToMessageSourceIfAnnotationDoesNotOverride("uberDoc.resource.${uriMessageKey}.header.${hdr.name()}.description", hdr.description()),
+                sampleValue: fallbackToMessageSourceIfAnnotationDoesNotOverride("uberDoc.resource.${uriMessageKey}.header.${hdr.name()}.sampleValue", hdr.sampleValue()),
+                required: hdr.required()
+        ]
     }
 
     List<Map> getUriParams() {
@@ -179,9 +186,11 @@ class MethodReader {
         if (!urip) {
             return [:]
         }
-        def customDescription = messageReader.get("uberDoc.resource.${uriMessageKey}.uriParam.${urip.name()}.description")
-        def customSampleValue = messageReader.get("uberDoc.resource.${uriMessageKey}.uriParam.${urip.name()}.sampleValue")
-        return [name: urip.name(), description: customDescription ?: urip.description(), sampleValue: customSampleValue ?: urip.sampleValue()]
+        return [
+                name: urip.name(),
+                description: fallbackToMessageSourceIfAnnotationDoesNotOverride("uberDoc.resource.${uriMessageKey}.uriParam.${urip.name()}.description", urip.description()),
+                sampleValue: fallbackToMessageSourceIfAnnotationDoesNotOverride("uberDoc.resource.${uriMessageKey}.uriParam.${urip.name()}.sampleValue", urip.sampleValue())
+        ]
     }
 
     List<Map> getQueryParams() {
@@ -207,13 +216,10 @@ class MethodReader {
             return [:]
         }
 
-        def customDescription = messageReader.get("uberDoc.resource.${uriMessageKey}.queryParam.${qp.name()}.description")
-        def customSampleValue = messageReader.get("uberDoc.resource.${uriMessageKey}.queryParam.${qp.name()}.sampleValue")
-
         return [
                 name       : qp.name(),
-                description: customDescription ?: qp.description(),
-                sampleValue: customSampleValue ?: qp.sampleValue(),
+                description: fallbackToMessageSourceIfAnnotationDoesNotOverride("uberDoc.resource.${uriMessageKey}.queryParam.${qp.name()}.description", qp.description()),
+                sampleValue: fallbackToMessageSourceIfAnnotationDoesNotOverride("uberDoc.resource.${uriMessageKey}.queryParam.${qp.name()}.sampleValue", qp.sampleValue()),
                 required   : qp.required(),
         ]
     }
@@ -241,33 +247,36 @@ class MethodReader {
             return [:]
         }
 
-        def customDescription = messageReader.get("uberDoc.resource.${uriMessageKey}.bodyParam.${bp.name()}.description")
-        def customSampleValue = messageReader.get("uberDoc.resource.${uriMessageKey}.bodyParam.${bp.name()}.sampleValue")
-
         return [
                 name       : bp.name(),
-                description: customDescription ?: bp.description(),
-                sampleValue: customSampleValue ?: bp.sampleValue(),
+                description: fallbackToMessageSourceIfAnnotationDoesNotOverride("uberDoc.resource.${uriMessageKey}.bodyParam.${bp.name()}.description", bp.description()),
+                sampleValue: fallbackToMessageSourceIfAnnotationDoesNotOverride("uberDoc.resource.${uriMessageKey}.bodyParam.${bp.name()}.sampleValue", bp.sampleValue()),
                 type       : bp.type().simpleName,
                 required   : bp.required(),
         ]
     }
 
-    private String replaceUriParams() {
+    private void replaceUriParams() {
         List<String> uriParamNames = []
-        if (reader.getAnnotation(UberDocUriParams).inMethod(method)) uriParamNames << reader.getAnnotation(UberDocUriParams).inMethod(method).value().collect {
-            it.name()
-        }
-        if (reader.getAnnotation(UberDocUriParam).inMethod(method)) uriParamNames.add(reader.getAnnotation(UberDocUriParam).inMethod(method).name())
 
-        if (uriParamNames.size() == 0) return uri
+        if (reader.getAnnotation(UberDocUriParams).inMethod(method)){
+            uriParamNames << reader.getAnnotation(UberDocUriParams).inMethod(method).value().collect { it.name() }
+        }
+
+        if (reader.getAnnotation(UberDocUriParam).inMethod(method)){
+            uriParamNames.add(reader.getAnnotation(UberDocUriParam).inMethod(method).name())
+        }
+
+        if (uriParamNames.size() == 0){
+            return
+        }
 
         uriParamNames.each {
             uri = uri.replaceFirst("\\(\\*\\)", "\\\$$it")
         }
-
-        return uri
     }
 
-
+    private String fallbackToMessageSourceIfAnnotationDoesNotOverride(String messageKey, String annotatedValue){
+        return fallback.fallbackToMessageSourceIfAnnotationDoesNotOverride(messageKey, annotatedValue)
+    }
 }

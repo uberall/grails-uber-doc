@@ -83,7 +83,7 @@ class UberDocServiceIntegrationSpec extends IntegrationSpec {
         1 == m.objects.size()
         3 == m.objects."Pod".size()
         "Pod" == m.objects."Pod".name
-        "uberDoc.object.Pod.description" == m.objects."Pod".description
+        "overriden description for model" == m.objects."Pod".description
         5 == m.objects."Pod".properties.size()
 
         6 == m.objects."Pod".properties[0].size()
@@ -101,8 +101,8 @@ class UberDocServiceIntegrationSpec extends IntegrationSpec {
         6 == m.objects."Pod".properties[1].size()
         "botName" == m.objects."Pod".properties[1].name
         "String" == m.objects."Pod".properties[1].type
-        "uberDoc.object.Pod.botName.description" == m.objects."Pod".properties[1].description
-        "uberDoc.object.Pod.botName.sampleValue" == m.objects."Pod".properties[1].sampleValue
+        "botName has a description" == m.objects."Pod".properties[1].description
+        "botName has a sample value" == m.objects."Pod".properties[1].sampleValue
         !m.objects."Pod".properties[1].required
         2 == m.objects."Pod".properties[1].constraints.size()
         "custom" == m.objects."Pod".properties[1].constraints.first().constraint

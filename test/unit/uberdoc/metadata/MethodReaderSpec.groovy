@@ -48,7 +48,7 @@ class MethodReaderSpec extends Specification {
         Locale.default == reader.locale
     }
 
-    def "getDescription returns gets message for key"() {
+    def "getResourceDescription returns message for key"() {
         given:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'get'
@@ -56,11 +56,54 @@ class MethodReaderSpec extends Specification {
         reader.uriMessageKey = 'api.pods.$id.GET'
 
         when:
-        String desc = reader.description
+        String desc = reader.resourceDescription
 
         then:
         'description set by message' == desc
         1 * messageSourceMock.getMessage('uberDoc.resource.api.pods.$id.GET.description', new Object[0], Locale.default) >> "description set by message"
+    }
+
+    def "getResourceDescription returns custom description"() {
+        given:
+        MethodReader reader = new MethodReader(PodController.methods.find {
+            it.name == 'list'
+        }, messageSourceMock, '/api/pods/', 'GET')
+
+        when:
+        String desc = reader.resourceDescription
+
+        then:
+        'custom description for list resource' == desc
+        1 * messageSourceMock.getMessage('uberDoc.resource.api.pods.GET.description', new Object[0], Locale.default) >> 'uberDoc.resource.api.pods.GET.description'
+    }
+
+    def "getResourceTitle returns message for key"() {
+        given:
+        MethodReader reader = new MethodReader(PodController.methods.find {
+            it.name == 'get'
+        }, messageSourceMock, '/api/pods/(*)', 'GET')
+        reader.uriMessageKey = 'api.pods.$id.GET'
+
+        when:
+        String desc = reader.resourceTitle
+
+        then:
+        'title set by message' == desc
+        1 * messageSourceMock.getMessage('uberDoc.api.pods.$id.GET.title', new Object[0], Locale.default) >> "title set by message"
+    }
+
+    def "getResourceTitle returns custom title"() {
+        given:
+        MethodReader reader = new MethodReader(PodController.methods.find {
+            it.name == 'list'
+        }, messageSourceMock, '/api/pods/', 'GET')
+
+        when:
+        String desc = reader.resourceTitle
+
+        then:
+        'custom title for list resource' == desc
+        1 * messageSourceMock.getMessage('uberDoc.api.pods.GET.title', new Object[0], Locale.default) >> 'uberDoc.api.pods.GET.title'
     }
 
     def "getRequestObject uses object"() {
@@ -160,6 +203,23 @@ class MethodReaderSpec extends Specification {
         1 * messageSourceMock.getMessage('uberDoc.resource.api.pods.$id.GET.error.404.description', new Object[0], Locale.default) >> "description in message"
     }
 
+    def "getErrors works properly with custom values"() {
+        given:
+        MethodReader reader = new MethodReader(PodController.methods.find {
+            it.name == 'create'
+        }, messageSourceMock, '/api/pods/', 'POST')
+
+        when:
+        def err = reader.errors
+
+        then:
+        1 == err.size()
+        "my sample error" == err[0].description
+        "NF404" == err[0].errorCode
+        404 == err[0].httpCode
+        1 * messageSourceMock.getMessage('uberDoc.resource.api.pods.POST.error.404.description', new Object[0], Locale.default) >> 'uberDoc.resource.api.pods.POST.error.404.description'
+    }
+
     def "getHeaders works properly"() {
         given:
         MethodReader reader = new MethodReader(PodController.methods.find {
@@ -174,6 +234,24 @@ class MethodReaderSpec extends Specification {
         1 * messageSourceMock.getMessage('uberDoc.resource.api.pods.GET.header.hdr.sampleValue', new Object[0], Locale.default) >> "sampleValue in message"
         "hdr" == headers[0].name
         "sampleValue in message" == headers[0].sampleValue
+    }
+
+    def "getHeaders works properly with custom value"() {
+        given:
+        MethodReader reader = new MethodReader(PodController.methods.find {
+            it.name == 'create'
+        }, messageSourceMock, '/api/pods/', 'POST')
+
+        when:
+        def headers = reader.headers
+
+        then:
+        1 == headers.size()
+        "some header param" == headers[0].name
+        "my header" == headers[0].description
+        "my sample value" == headers[0].sampleValue
+        1 * messageSourceMock.getMessage('uberDoc.resource.api.pods.POST.header.some.header.param.description', new Object[0], Locale.default) >> "uberDoc.resource.api.pods.POST.header.some.header.param.description"
+        1 * messageSourceMock.getMessage('uberDoc.resource.api.pods.POST.header.some.header.param.sampleValue', new Object[0], Locale.default) >> "uberDoc.resource.api.pods.POST.header.some.header.param.sampleValue"
     }
 
     def "getHeaders returns nothing if method does not have the annotation"() {
@@ -202,6 +280,26 @@ class MethodReaderSpec extends Specification {
         "id" == uriParams[0].name
         "description in message" == uriParams[0].description
         "sampleValue in message" == uriParams[0].sampleValue
+    }
+
+    def "getUriParams works properly with custom values"() {
+        given:
+        MethodReader reader = new MethodReader(PodController.methods.find {
+            it.name == 'update'
+        }, messageSourceMock, '/api/pods/(*)', 'PATCH')
+
+        when:
+        def uriParams = reader.uriParams
+
+        then:
+        1 == uriParams.size()
+
+        "id" == uriParams[0].name
+        "custom description for id" == uriParams[0].description
+        "custom sample value for id" == uriParams[0].sampleValue
+
+        1 * messageSourceMock.getMessage('uberDoc.resource.api.pods.$id.PATCH.uriParam.id.description', new Object[0], Locale.default) >> 'uberDoc.resource.api.pods.$id.PATCH.uriParam.id.description'
+        1 * messageSourceMock.getMessage('uberDoc.resource.api.pods.$id.PATCH.uriParam.id.sampleValue', new Object[0], Locale.default) >> 'uberDoc.resource.api.pods.$id.PATCH.uriParam.id.sampleValue'
     }
 
     def "getUriParams works properly with mixed use of annotations"() {
@@ -244,6 +342,34 @@ class MethodReaderSpec extends Specification {
         "sampleValue in message" == qry[0].sampleValue
     }
 
+    def "getQueryParams works properly with custom description and sample value"() {
+        given:
+        MethodReader reader = new MethodReader(PodController.methods.find {
+            it.name == 'list'
+        }, messageSourceMock, '/api/pods/', 'GET')
+
+        when:
+        def qry = reader.queryParams
+
+        then:
+        2 == qry.size()
+
+        "max" == qry[0].name
+        qry[0].required
+        "description in message" == qry[0].description
+        "sampleValue in message" == qry[0].sampleValue
+
+        "page" == qry[1].name
+        !qry[1].required
+        "custom description" == qry[1].description
+        "custom value" == qry[1].sampleValue
+
+        1 * messageSourceMock.getMessage('uberDoc.resource.api.pods.GET.queryParam.max.description', new Object[0], Locale.default) >> "description in message"
+        1 * messageSourceMock.getMessage('uberDoc.resource.api.pods.GET.queryParam.max.sampleValue', new Object[0], Locale.default) >> "sampleValue in message"
+        1 * messageSourceMock.getMessage('uberDoc.resource.api.pods.GET.queryParam.page.description', new Object[0], Locale.default) >> "uberDoc.resource.api.pods.GET.queryParam.page.description"
+        1 * messageSourceMock.getMessage('uberDoc.resource.api.pods.GET.queryParam.page.sampleValue', new Object[0], Locale.default) >> "uberDoc.resource.api.pods.GET.queryParam.page.sampleValue"
+    }
+
     def "getQueryParams works properly with mixed use of annotations"() {
         when:
         MethodReader reader = new MethodReader(PodController.methods.find {
@@ -265,5 +391,31 @@ class MethodReaderSpec extends Specification {
 
         then:
         !reader.queryParams
+    }
+
+    def "getBodyParams works properly"() {
+        given:
+        MethodReader reader = new MethodReader(PodController.methods.find {
+            it.name == 'create'
+        }, messageSourceMock, '/api/pods/', 'POST')
+
+        when:
+        def bodyParams = reader.bodyParams
+
+        then:
+        2 == bodyParams.size()
+
+        "firstBody" == bodyParams[0].name
+        "description in message" == bodyParams[0].description
+        "sampleValue in message" == bodyParams[0].sampleValue
+
+        "secondBody" == bodyParams[1].name
+        "2nd body desc" == bodyParams[1].description
+        "body" == bodyParams[1].sampleValue
+
+        1 * messageSourceMock.getMessage('uberDoc.resource.api.pods.POST.bodyParam.firstBody.description', new Object[0], Locale.default) >> "description in message"
+        1 * messageSourceMock.getMessage('uberDoc.resource.api.pods.POST.bodyParam.firstBody.sampleValue', new Object[0], Locale.default) >> "sampleValue in message"
+        1 * messageSourceMock.getMessage('uberDoc.resource.api.pods.POST.bodyParam.secondBody.description', new Object[0], Locale.default) >> "uberDoc.resource.api.pods.POST.bodyParam.secondBody.description"
+        1 * messageSourceMock.getMessage('uberDoc.resource.api.pods.POST.bodyParam.secondBody.sampleValue', new Object[0], Locale.default) >> "uberDoc.resource.api.pods.POST.bodyParam.secondBody.sampleValue"
     }
 }

@@ -5,7 +5,7 @@ import uberdoc.annotation.UberDocExplicitProperty
 import uberdoc.annotation.UberDocModel
 import uberdoc.annotation.UberDocProperty
 
-@UberDocModel
+@UberDocModel(description = "overriden description for model")
 @UberDocExplicitProperties([
         @UberDocExplicitProperty(name = "inherited", type = String),
         @UberDocExplicitProperty(name = "id", type = Long)
@@ -16,7 +16,7 @@ class Pod extends AbstractObject {
     @UberDocProperty(required = true)
     String license
 
-    @UberDocProperty
+    @UberDocProperty(description = "botName has a description", sampleValue = "botName has a sample value")
     String botName
 
     static hasOne = [jedi: Persona]

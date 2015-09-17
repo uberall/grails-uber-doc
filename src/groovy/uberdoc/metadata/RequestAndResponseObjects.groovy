@@ -4,6 +4,7 @@ import groovy.util.logging.Log4j
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import uberdoc.annotation.*
+import uberdoc.messages.MessageFallback
 import uberdoc.messages.MessageReader
 
 import java.lang.reflect.Field
@@ -18,10 +19,12 @@ class RequestAndResponseObjects {
     private Set requestAndResponseClasses = []
     private GrailsApplication grailsApplication
     private MessageReader messageReader
+    private MessageFallback fallback
 
     RequestAndResponseObjects(GrailsApplication g, def messageSource, Locale locale) {
         grailsApplication = g
         messageReader = new MessageReader(messageSource, locale)
+        fallback = new MessageFallback(messageReader)
     }
 
     void extractObjectsInfoFromResource(UberDocResource uberDocResource) {
@@ -73,11 +76,11 @@ class RequestAndResponseObjects {
             log.info("reading from $clazz")
 
             // collect class information
-            String customDescription = messageReader.get("uberDoc.object.${clazz.simpleName}.description")
+            UberDocModel modelAnnotation = clazz.getAnnotation(UberDocModel)
 
             Map clazzInfo = [:]
             clazzInfo << [name: clazz.simpleName]
-            clazzInfo << [description: customDescription]
+            clazzInfo << [description: fallback.fallbackToMessageSourceIfAnnotationDoesNotOverride("uberDoc.object.${clazz.simpleName}.description", modelAnnotation.description())]
             clazzInfo << [properties: []]
 
             GrailsDomainClass domainClass = grailsApplication.getDomainClass(clazz.name) as GrailsDomainClass
@@ -104,13 +107,10 @@ class RequestAndResponseObjects {
         // grab info from annotation
         Map propertyMap = [:]
         def constraints = []
-        String customDescription = messageReader.get("uberDoc.object.${objectName}.${field.name}.description")
-        String customSampleValue = messageReader.get("uberDoc.object.${objectName}.${field.name}.sampleValue")
-
 
         propertyMap << [name: field.name]
-        propertyMap << [description: customDescription]
-        propertyMap << [sampleValue: customSampleValue]
+        propertyMap << [description: fallback.fallbackToMessageSourceIfAnnotationDoesNotOverride("uberDoc.object.${objectName}.${field.name}.description", propertyAnnotation.description())]
+        propertyMap << [sampleValue: fallback.fallbackToMessageSourceIfAnnotationDoesNotOverride("uberDoc.object.${objectName}.${field.name}.sampleValue", propertyAnnotation.sampleValue())]
         propertyMap << [required: propertyAnnotation.required()]
 
         // get the type, also for Sets
@@ -122,12 +122,11 @@ class RequestAndResponseObjects {
                 log.error("No type defined for collection uberDoc.object.${objectName}.${field.name}")
                 propertyMap << [type: "UNDEFINED"]
             }
-
-
             propertyMap << [isCollection: true]
         } else {
             propertyMap << [type: field.type.simpleName]
         }
+
         // read constraints
         if (classConstraints) {
             classConstraints.entrySet().findAll { it.key == field.name }.each { constrainedProperty ->
@@ -142,9 +141,6 @@ class RequestAndResponseObjects {
         }
 
         propertyMap << [constraints: constraints]
-
-        // check, if we should expose the id in case of a domain class
-
 
         return propertyMap
     }

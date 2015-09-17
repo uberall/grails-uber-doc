@@ -20,8 +20,8 @@ class UberDocResourceParser {
         methodReader = new MethodReader(controllerMethod, messageSource, mapping.uri, mapping.method)
 
         restfulResource.baseMessageKey = methodReader.baseMessageKey
-        restfulResource.title = methodReader.title
-        restfulResource.description = methodReader.description
+        restfulResource.title = methodReader.resourceTitle
+        restfulResource.description = methodReader.resourceDescription
         restfulResource.uri = methodReader.uri
         restfulResource.method = mapping.method
         restfulResource.requestObject = methodReader.requestObject
