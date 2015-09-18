@@ -83,22 +83,42 @@ class RequestAndResponseObjects {
             clazzInfo << [description: fallback.fallbackToMessageSourceIfAnnotationDoesNotOverride("uberDoc.object.${clazz.simpleName}.description", modelAnnotation.description())]
             clazzInfo << [properties: []]
 
-            GrailsDomainClass domainClass = grailsApplication.getDomainClass(clazz.name) as GrailsDomainClass
-            def domainClassConstraints = domainClass?.getConstrainedProperties()
 
-            clazz.getProperties().declaredFields.findAll { field ->
-                if (field.isAnnotationPresent(UberDocProperty)) {
-                    Map fieldInformation = getProperties(field, domainClassConstraints, clazz.simpleName)
-                    clazzInfo.properties << fieldInformation
-                }
-            }
-
-            clazzInfo.properties.addAll(getImplicitProperties(clazz))
+            clazzInfo.properties = getDeclaredFields(clazz)
 
             result << [(clazz.simpleName): clazzInfo]
         }
 
         return result
+    }
+
+    /**
+     * Returns a list of annotated Field of the given class
+     * It also Recursivly scans superclass for annotated fields
+     * @param clazz
+     * @return the complete list of annotated fields
+     */
+    private List getDeclaredFields(Class clazz){
+        def properties = []
+
+        if(clazz.superclass != Object) {
+            def fromSuper = getDeclaredFields(clazz.superclass)
+            if(fromSuper)
+                properties.addAll(fromSuper)
+        }
+
+        GrailsDomainClass domainClass = grailsApplication.getDomainClass(clazz.name) as GrailsDomainClass
+        def domainClassConstraints = domainClass?.getConstrainedProperties()
+
+        clazz.getProperties().declaredFields.findAll { field ->
+            if (field.isAnnotationPresent(UberDocProperty)) {
+                Map fieldInformation = getProperties(field, domainClassConstraints, clazz.simpleName)
+                properties << fieldInformation
+            }
+        }
+
+        properties << getImplicitProperties(clazz)
+        properties.grep()
     }
 
     private Map getProperties(Field field, def classConstraints, String objectName) {
