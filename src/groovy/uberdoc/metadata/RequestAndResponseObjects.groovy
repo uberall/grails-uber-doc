@@ -98,11 +98,11 @@ class RequestAndResponseObjects {
      * @param clazz
      * @return the complete list of annotated fields
      */
-    private List getDeclaredFields(Class clazz){
+    private List getDeclaredFields(Class clazz, Class childClassToUseForMessageKeys = null){
         def properties = []
 
         if(clazz.superclass != Object) {
-            def fromSuper = getDeclaredFields(clazz.superclass)
+            def fromSuper = getDeclaredFields(clazz.superclass, clazz)
             if(fromSuper)
                 properties.addAll(fromSuper)
         }
@@ -112,12 +112,12 @@ class RequestAndResponseObjects {
 
         clazz.getProperties().declaredFields.findAll { field ->
             if (field.isAnnotationPresent(UberDocProperty)) {
-                Map fieldInformation = getProperties(field, domainClassConstraints, clazz.simpleName)
+                Map fieldInformation = getProperties(field, domainClassConstraints, childClassToUseForMessageKeys ? childClassToUseForMessageKeys.simpleName : clazz.simpleName)
                 properties << fieldInformation
             }
         }
 
-        properties << getImplicitProperties(clazz)
+        properties.addAll(getImplicitProperties(clazz))
         properties.grep()
     }
 

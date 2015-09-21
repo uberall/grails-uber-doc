@@ -84,37 +84,61 @@ class UberDocServiceIntegrationSpec extends IntegrationSpec {
         3 == m.objects."Pod".size()
         "Pod" == m.objects."Pod".name
         "overriden description for model" == m.objects."Pod".description
-        5 == m.objects."Pod".properties.size()
+        6 == m.objects."Pod".properties.size()
 
         6 == m.objects."Pod".properties[0].size()
-        "license" == m.objects."Pod".properties[0].name
+        "shared" == m.objects."Pod".properties[0].name
         "String" == m.objects."Pod".properties[0].type
-        "uberDoc.object.Pod.license.description" == m.objects."Pod".properties[0].description
-        "uberDoc.object.Pod.license.sampleValue" == m.objects."Pod".properties[0].sampleValue
-        m.objects."Pod".properties[0].required
-        2 == m.objects."Pod".properties[0].constraints.size()
-        "blank" == m.objects."Pod".properties[0].constraints.first().constraint
-        true == m.objects."Pod".properties[0].constraints.first().value
-        "nullable" == m.objects."Pod".properties[0].constraints.last().constraint
-        false == m.objects."Pod".properties[0].constraints.last().value
+        "uberDoc.object.Pod.shared.description" == m.objects."Pod".properties[0].description
+        "uberDoc.object.Pod.shared.sampleValue" == m.objects."Pod".properties[0].sampleValue
+        !m.objects."Pod".properties[0].required
+        1 == m.objects."Pod".properties[0].constraints.size()
+        "nullable" == m.objects."Pod".properties[0].constraints.first().constraint
+        false == m.objects."Pod".properties[0].constraints.first().value
 
         6 == m.objects."Pod".properties[1].size()
-        "botName" == m.objects."Pod".properties[1].name
+        "license" == m.objects."Pod".properties[1].name
         "String" == m.objects."Pod".properties[1].type
-        "botName has a description" == m.objects."Pod".properties[1].description
-        "botName has a sample value" == m.objects."Pod".properties[1].sampleValue
-        !m.objects."Pod".properties[1].required
+        "uberDoc.object.Pod.license.description" == m.objects."Pod".properties[1].description
+        "uberDoc.object.Pod.license.sampleValue" == m.objects."Pod".properties[1].sampleValue
+        m.objects."Pod".properties[1].required
         2 == m.objects."Pod".properties[1].constraints.size()
-        "custom" == m.objects."Pod".properties[1].constraints.first().constraint
-        "uberDoc.object.Pod.constraints.custom" == m.objects."Pod".properties[1].constraints.first().value
+        "blank" == m.objects."Pod".properties[1].constraints.first().constraint
+        true == m.objects."Pod".properties[1].constraints.first().value
         "nullable" == m.objects."Pod".properties[1].constraints.last().constraint
         false == m.objects."Pod".properties[1].constraints.last().value
 
+        6 == m.objects."Pod".properties[2].size()
+        "botName" == m.objects."Pod".properties[2].name
+        "String" == m.objects."Pod".properties[2].type
+        "botName has a description" == m.objects."Pod".properties[2].description
+        "botName has a sample value" == m.objects."Pod".properties[2].sampleValue
+        !m.objects."Pod".properties[2].required
+        2 == m.objects."Pod".properties[2].constraints.size()
+        "custom" == m.objects."Pod".properties[2].constraints.first().constraint
+        "uberDoc.object.Pod.constraints.custom" == m.objects."Pod".properties[2].constraints.first().value
+        "nullable" == m.objects."Pod".properties[2].constraints.last().constraint
+        false == m.objects."Pod".properties[2].constraints.last().value
+
+        5 == m.objects."Pod".properties[3].size()
+        "dateCreated" == m.objects."Pod".properties[3].name
+        "Date" == m.objects."Pod".properties[3].type
+        "uberDoc.object.Pod.dateCreated.description" == m.objects."Pod".properties[3].description
+        "uberDoc.object.Pod.dateCreated.sampleValue" == m.objects."Pod".properties[3].sampleValue
+        !m.objects."Pod".properties[3].required
+
         5 == m.objects."Pod".properties[4].size()
-        "id" == m.objects."Pod".properties[4].name
-        "Long" == m.objects."Pod".properties[4].type
-        "uberDoc.object.Pod.id.description" == m.objects."Pod".properties[4].description
-        "uberDoc.object.Pod.id.sampleValue" == m.objects."Pod".properties[4].sampleValue
+        "inherited" == m.objects."Pod".properties[4].name
+        "String" == m.objects."Pod".properties[4].type
+        "uberDoc.object.Pod.inherited.description" == m.objects."Pod".properties[4].description
+        "uberDoc.object.Pod.inherited.sampleValue" == m.objects."Pod".properties[4].sampleValue
         !m.objects."Pod".properties[4].required
+
+        5 == m.objects."Pod".properties[5].size()
+        "id" == m.objects."Pod".properties[5].name
+        "Long" == m.objects."Pod".properties[5].type
+        "uberDoc.object.Pod.id.description" == m.objects."Pod".properties[5].description
+        "uberDoc.object.Pod.id.sampleValue" == m.objects."Pod".properties[5].sampleValue
+        !m.objects."Pod".properties[5].required
     }
 }

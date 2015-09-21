@@ -1,5 +1,5 @@
 class UberdocGrailsPlugin {
-    def version = "1.0.2"
+    def version = "1.0.3"
     def grailsVersion = "2.4 > *"
     def pluginExcludes = [
             "grails-app/views/**",
