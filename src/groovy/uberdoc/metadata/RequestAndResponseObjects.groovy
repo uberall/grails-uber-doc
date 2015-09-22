@@ -73,7 +73,7 @@ class RequestAndResponseObjects {
                 return
             }
 
-            log.info("reading from $clazz")
+            log.debug("reading from $clazz")
 
             // collect class information
             UberDocModel modelAnnotation = clazz.getAnnotation(UberDocModel)
@@ -134,7 +134,7 @@ class RequestAndResponseObjects {
         propertyMap << [required: propertyAnnotation.required()]
 
         // get the type, also for Sets
-        log.info("working on $objectName and ${field.name}")
+        log.debug("working on $objectName and ${field.name}")
         if (field.type.name.endsWith("Set") || field.type.name.endsWith("List")) {
             if (field.signature) {
                 propertyMap << [type: field.signature.split("/").last().split(";").first()]
