@@ -27,7 +27,7 @@ import java.lang.annotation.Target
     /**
      * Indicates whether this header is mandatory for activating the resource.
      */
-    boolean required() default true
+    boolean required() default false
 
     /**
      * A sample valid value for the header, for illustration purposes.

@@ -26,7 +26,7 @@ import java.lang.annotation.Target
     /**
      * Indicates whether a query param should be informed when interacting with the API.
      */
-    boolean required() default true
+    boolean required() default false
 
     /**
      * Sample value for this parameter, to be provided for illustration purposes.
