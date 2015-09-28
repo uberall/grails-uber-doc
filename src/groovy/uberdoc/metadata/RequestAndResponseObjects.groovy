@@ -139,7 +139,7 @@ class RequestAndResponseObjects {
             if (field.signature) {
                 propertyMap << [type: field.signature.split("/").last().split(";").first()]
             } else {
-                log.error("No type defined for collection uberDoc.object.${objectName}.${field.name}")
+                log.warn("No type defined for collection uberDoc.object.${objectName}.${field.name}")
                 propertyMap << [type: "UNDEFINED"]
             }
             propertyMap << [isCollection: true]
@@ -192,7 +192,7 @@ class RequestAndResponseObjects {
             implicitProperties.value().each { impl ->
 
                 if (explicitNames.contains(impl.name())) {
-                    log.error("Skipping creation of explicit parameter uberDoc.object.${clazz.simpleName}.${impl.name()}, as the actual property exists as well.")
+                    log.info("Skipping creation of explicit parameter uberDoc.object.${clazz.simpleName}.${impl.name()}, as the actual property exists as well.")
                 }
 
                 customDescription = messageReader.get("uberDoc.object.${clazz.simpleName}.${impl.name()}.description")

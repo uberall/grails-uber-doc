@@ -70,7 +70,7 @@ class UberDocService {
 
                 // if there is no mapping, there's no point int extracting resources
                 if (!mapping) {
-                    log.error("Cannot find mapping for $method -> ignored.")
+                    log.warn("Cannot find mapping for $method -> ignored.")
                     return
                 }
 
