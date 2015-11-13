@@ -72,7 +72,7 @@ Just annotate the proper classes / methods, inject UberDocService and play aroun
 
 ## Example usages
 
-Yyou can find examples of the plugin usage within the source code itself, under the "sample" package:
+You can find examples of the plugin usage within the source code itself, under the "sample" package:
 
 https://github.com/uberall/grails-uber-doc/tree/master/grails-app/controllers/sample
 https://github.com/uberall/grails-uber-doc/tree/master/grails-app/domain/sample
