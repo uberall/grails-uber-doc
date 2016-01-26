@@ -1,5 +1,10 @@
 package sample
 
+import uberdoc.annotation.UberDocExplicitProperty
+import uberdoc.annotation.UberDocModel
+
+@UberDocModel(description = "overriden description for Persona")
+@UberDocExplicitProperty(name = "dateCreated", type = Date)
 class Persona {
 
     String firstName

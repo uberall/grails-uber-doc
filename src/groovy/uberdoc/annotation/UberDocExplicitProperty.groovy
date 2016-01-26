@@ -27,7 +27,7 @@ import java.lang.annotation.Target
     /**
      * The implicit property's type, when it's a collection (e.g.: collectionOfType = String means it's a Collection<String>)
      */
-    Class collectionOfType() default String
+    boolean isCollection() default false
 
     /**
      * An example value of a request/response attribute.

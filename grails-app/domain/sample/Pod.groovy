@@ -8,7 +8,9 @@ import uberdoc.annotation.UberDocProperty
 @UberDocModel(description = "overriden description for model")
 @UberDocExplicitProperties([
         @UberDocExplicitProperty(name = "inherited", type = String),
-        @UberDocExplicitProperty(name = "id", type = Long)
+        @UberDocExplicitProperty(name = "id", type = Long),
+        @UberDocExplicitProperty(name = "longCollection", type = Long, isCollection = true),
+        @UberDocExplicitProperty(name = "spaceship", description = "The spaceship of the Jedi that owns this pod" , type = Spaceship, isCollection = false)
 ])
 @UberDocExplicitProperty(name = "dateCreated", type = Date)
 class Pod extends AbstractObject {
