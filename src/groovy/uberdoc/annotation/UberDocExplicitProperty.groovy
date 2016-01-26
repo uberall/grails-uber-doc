@@ -25,7 +25,7 @@ import java.lang.annotation.Target
     boolean required() default false
 
     /**
-     * The implicit property's type, when it's a collection (e.g.: collectionOfType = String means it's a Collection<String>)
+     * Defines if the property is a collection of the declared type (e.g.: type = String and isCollection = true means it's a Collection<String>)
      */
     boolean isCollection() default false
 
