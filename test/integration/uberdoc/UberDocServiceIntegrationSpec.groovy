@@ -18,6 +18,12 @@ class UberDocServiceIntegrationSpec extends IntegrationSpec {
 
         when:
         def m = service.apiDocs
+        def somethingElse = m.resources?.find {it.method == 'POST' && it.uri == "/api/something/else"}
+        def podsIdGet = m.resources?.find {it.method == 'GET' && it.uri == '/api/pods/$id'}
+        def podsPost = m.resources?.find {it.method == 'POST' && it.uri == '/api/pods'}
+        def podsGet = m.resources?.find {it.method == 'GET' && it.uri == '/api/pods'}
+        def podsIdDelete = m.resources?.find {it.method == 'DELETE' && it.uri == '/api/pods/$id'}
+        def podsIdPut = m.resources?.find {it.method == 'PUT' && it.uri == '/api/pods/$id'}
 
         then:
         m
@@ -25,66 +31,74 @@ class UberDocServiceIntegrationSpec extends IntegrationSpec {
         m.resources
         6 == m.resources.size()
 
-        "POST" == m.resources[0].method
-        "/api/something/else" == m.resources[0].uri
-        "Pod" == m.resources[0].requestObject
-        "Pod" == m.resources[0].responseObject
-        1 == m.resources[0].headers.size()
-        0 == m.resources[0].queryParams.size()
-        3 == m.resources[0].uriParams.size()
+        somethingElse
+        "POST" == somethingElse.method
+        "/api/something/else" == somethingElse.uri
+        "Pod" == somethingElse.requestObject
+        "Pod" == somethingElse.responseObject
+        1 == somethingElse.headers.size()
+        0 == somethingElse.queryParams.size()
+        3 == somethingElse.uriParams.size()
 
-        "GET" == m.resources[1].method
-        '/api/pods/$id' == m.resources[1].uri
-        !m.resources[1].requestObject
-        "Pod" == m.resources[1].responseObject
-        0 == m.resources[1].headers.size()
-        1 == m.resources[1].errors.size()
-        0 == m.resources[1].queryParams.size()
-        1 == m.resources[1].uriParams.size()
+        podsIdGet
+        "GET" == podsIdGet.method
+        '/api/pods/$id' == podsIdGet.uri
+        !podsIdGet.requestObject
+        "Pod" == podsIdGet.responseObject
+        0 == podsIdGet.headers.size()
+        1 == podsIdGet.errors.size()
+        0 == podsIdGet.queryParams.size()
+        1 == podsIdGet.uriParams.size()
 
-        "POST" == m.resources[2].method
-        "/api/pods" == m.resources[2].uri
-        "Pod" == m.resources[2].requestObject
-        "Pod" == m.resources[2].responseObject
-        1 == m.resources[2].headers.size()
-        1 == m.resources[2].errors.size()
-        0 == m.resources[2].queryParams.size()
-        3 == m.resources[2].uriParams.size()
-        
-        "GET" == m.resources[3].method
-        '/api/pods' == m.resources[3].uri
-        !m.resources[3].requestObject
-        "Pod" == m.resources[3].responseObject
-        1 == m.resources[3].headers.size()
-        0 == m.resources[3].errors.size()
-        2 == m.resources[3].queryParams.size()
-        0 == m.resources[3].uriParams.size()
+        podsPost
+        "POST" == podsPost.method
+        "/api/pods" == podsPost.uri
+        "Pod" == podsPost.requestObject
+        "Pod" == podsPost.responseObject
+        1 == podsPost.headers.size()
+        1 == podsPost.errors.size()
+        0 == podsPost.queryParams.size()
+        3 == podsPost.uriParams.size()
 
-        "DELETE" == m.resources[4].method
-        '/api/pods/$id' == m.resources[4].uri
-        !m.resources[4].requestObject
-        !m.resources[4].responseObject
-        0 == m.resources[4].headers.size()
-        0 == m.resources[4].errors.size()
-        0 == m.resources[4].queryParams.size()
-        1 == m.resources[4].uriParams.size()
+        podsGet
+        "GET" == podsGet.method
+        '/api/pods' == podsGet.uri
+        !podsGet.requestObject
+        "Pod" == podsGet.responseObject
+        1 == podsGet.headers.size()
+        0 == podsGet.errors.size()
+        2 == podsGet.queryParams.size()
+        0 == podsGet.uriParams.size()
 
-        "PUT" == m.resources[5].method
-        '/api/pods/$id' == m.resources[5].uri
-        "Pod" == m.resources[5].requestObject
-        "Pod" == m.resources[5].responseObject
-        1 == m.resources[5].headers.size()
-        0 == m.resources[5].errors.size()
-        1 == m.resources[5].queryParams.size()
-        1 == m.resources[5].uriParams.size()
+        podsIdDelete
+        "DELETE" == podsIdDelete.method
+        '/api/pods/$id' == podsIdDelete.uri
+        !podsIdDelete.requestObject
+        !podsIdDelete.responseObject
+        0 == podsIdDelete.headers.size()
+        0 == podsIdDelete.errors.size()
+        0 == podsIdDelete.queryParams.size()
+        1 == podsIdDelete.uriParams.size()
+
+        podsIdPut
+        "PUT" == podsIdPut.method
+        '/api/pods/$id' == podsIdPut.uri
+        "Pod" == podsIdPut.requestObject
+        "Pod" == podsIdPut.responseObject
+        1 == podsIdPut.headers.size()
+        0 == podsIdPut.errors.size()
+        1 == podsIdPut.queryParams.size()
+        1 == podsIdPut.uriParams.size()
 
         m.objects
 
-        1 == m.objects.size()
+        2 == m.objects.size()
+        !m.objects."Persona" // as Persona is not declared as UberDocProperty in the Pod model, and is not returned by any controller
+        m.objects."Spaceship" // even if not directly declared in the POD, we will include the UberDocModel of SpaceShip because it is referenced as an UberDocProperty (explicit or implicit)
         3 == m.objects."Pod".size()
         "Pod" == m.objects."Pod".name
         "overriden description for model" == m.objects."Pod".description
-        6 == m.objects."Pod".properties.size()
+        8 == m.objects."Pod".properties.size()
 
         6 == m.objects."Pod".properties[0].size()
         "shared" == m.objects."Pod".properties[0].name
@@ -120,25 +134,55 @@ class UberDocServiceIntegrationSpec extends IntegrationSpec {
         "nullable" == m.objects."Pod".properties[2].constraints.last().constraint
         false == m.objects."Pod".properties[2].constraints.last().value
 
-        5 == m.objects."Pod".properties[3].size()
+        6 == m.objects."Pod".properties[3].size()
         "dateCreated" == m.objects."Pod".properties[3].name
         "Date" == m.objects."Pod".properties[3].type
         "uberDoc.object.Pod.dateCreated.description" == m.objects."Pod".properties[3].description
         "uberDoc.object.Pod.dateCreated.sampleValue" == m.objects."Pod".properties[3].sampleValue
         !m.objects."Pod".properties[3].required
 
-        5 == m.objects."Pod".properties[4].size()
+        6 == m.objects."Pod".properties[4].size()
         "inherited" == m.objects."Pod".properties[4].name
         "String" == m.objects."Pod".properties[4].type
         "uberDoc.object.Pod.inherited.description" == m.objects."Pod".properties[4].description
         "uberDoc.object.Pod.inherited.sampleValue" == m.objects."Pod".properties[4].sampleValue
         !m.objects."Pod".properties[4].required
+        !m.objects."Pod".properties[4].isCollection
 
-        5 == m.objects."Pod".properties[5].size()
+        6 == m.objects."Pod".properties[5].size()
         "id" == m.objects."Pod".properties[5].name
         "Long" == m.objects."Pod".properties[5].type
         "uberDoc.object.Pod.id.description" == m.objects."Pod".properties[5].description
         "uberDoc.object.Pod.id.sampleValue" == m.objects."Pod".properties[5].sampleValue
         !m.objects."Pod".properties[5].required
+        !m.objects."Pod".properties[5].isCollection
+
+        6 == m.objects."Pod".properties[6].size()
+        "longCollection" == m.objects."Pod".properties[6].name
+        "Long" == m.objects."Pod".properties[6].type
+        "uberDoc.object.Pod.longCollection.description" == m.objects."Pod".properties[6].description
+        "uberDoc.object.Pod.longCollection.sampleValue" == m.objects."Pod".properties[6].sampleValue
+        !m.objects."Pod".properties[6].required
+        m.objects."Pod".properties[6].isCollection
+
+        6 == m.objects."Pod".properties[7].size()
+        "spaceship" == m.objects."Pod".properties[7].name
+        "Spaceship" == m.objects."Pod".properties[7].type
+        "uberDoc.object.Pod.spaceship.description" == m.objects."Pod".properties[7].description
+        "uberDoc.object.Pod.spaceship.sampleValue" == m.objects."Pod".properties[7].sampleValue
+        !m.objects."Pod".properties[7].required
+        !m.objects."Pod".properties[7].isCollection
+
+        3 == m.objects."Spaceship".size()
+        "Spaceship" == m.objects."Spaceship".name
+        "overriden description for Spaceship" == m.objects."Spaceship".description
+        1 == m.objects."Spaceship".properties.size()
+
+        6 == m.objects."Spaceship".properties[0].size()
+        "dateCreated" == m.objects."Spaceship".properties[0].name
+        "Date" == m.objects."Spaceship".properties[0].type
+        "uberDoc.object.Spaceship.dateCreated.description" == m.objects."Spaceship".properties[0].description
+        "uberDoc.object.Spaceship.dateCreated.sampleValue" == m.objects."Spaceship".properties[0].sampleValue
+        !m.objects."Spaceship".properties[0].required
     }
 }
