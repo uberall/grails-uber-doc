@@ -51,7 +51,7 @@ class RequestAndResponseObjects {
     }
 
     /**
-     * Extracts information from our annotations on each class and spits it out as a map
+     * Extracts information from our annotations on each class and spits it out as a map, recursively extracts information also from properties if they are annotated correctly
      *
      * Each request/response class:
      * - description
@@ -65,11 +65,11 @@ class RequestAndResponseObjects {
      * @param set the set of classes to grab information from
      * @return a map
      */
-    private Map convertToMap(Set<Class> set) {
-        Map<Class, Object> result = [:]
+    private Map convertToMap(Collection<Class> set, Map<Class, Object> result = [:]) {
 
         set.each { Class clazz ->
-            if (!clazz.isAnnotationPresent(UberDocModel)) {
+            // creates the clazzInfo object only if the property is annotated correctly and if we did not already convert it.
+            if (!clazz.isAnnotationPresent(UberDocModel) || result.containsKey(clazz.simpleName)) {
                 return
             }
 
@@ -87,9 +87,33 @@ class RequestAndResponseObjects {
             clazzInfo.properties = getDeclaredFields(clazz)
 
             result << [(clazz.simpleName): clazzInfo]
+            convertToMap(propertiesToConvert(clazz), result)
         }
 
         return result
+    }
+
+    /**
+     * Extracts the classes of the properties that need to be converted to a map
+     * @param clazz
+     * @return
+     */
+    private static Set<Class> propertiesToConvert(Class clazz) {
+        Set<Class> toConvert = []
+        clazz.getDeclaredFields().findAll {it.isAnnotationPresent(UberDocProperty)}?.type?.each {
+            toConvert << it
+        }
+
+        if (clazz.getAnnotation(UberDocExplicitProperty)) {
+            toConvert << clazz.getAnnotation(UberDocExplicitProperty)?.type()
+        }
+
+        if (clazz.getAnnotation(UberDocExplicitProperties)) {
+            clazz.getAnnotation(UberDocExplicitProperties).value().each {
+                toConvert << it.type()
+            }
+        }
+        return toConvert
     }
 
     /**
@@ -182,7 +206,8 @@ class RequestAndResponseObjects {
                     type       : implicitProperty.type().simpleName,
                     description: customDescription,
                     sampleValue: customSampleValue,
-                    required   : implicitProperty.required()
+                    required   : implicitProperty.required(),
+                    isCollection: implicitProperty.collection
             ]
         }
 
@@ -203,8 +228,10 @@ class RequestAndResponseObjects {
                         type       : impl.type().simpleName,
                         description: customDescription,
                         sampleValue: customSampleValue,
-                        required   : impl.required()
+                        required   : impl.required(),
+                        isCollection: impl.collection
                 ]
+
             }
         }
 
