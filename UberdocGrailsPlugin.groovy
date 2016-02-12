@@ -24,7 +24,7 @@ For more documentation, see our GitHub repository.
     def documentation = "https://github.com/uberall/grails-uber-doc"
     def license = "BSD"
     def organization = [name: "uberall", url: "https://uberall.com/"]
-    def developers = [[name: "Florian Langenhahn", email: "florian.langenhahn@uberall.com"], [name: "Florian Huebner", email: "florian@uberall.com"], [name: "Philipp Eschenbach", email: "philipp@uberall.com"]]
+    def developers = [[name: "Florian Langenhahn", email: "florian.langenhahn@uberall.com"], [name: "Florian Huebner", email: "florian@uberall.com"], [name: "Philipp Eschenbach", email: "philipp@uberall.com"], [name: "Alex Pedini", email: "alex.pedini@gmail.com"]]
     def issueManagement = [system: "GitHub", url: "https://github.com/uberall/grails-uber-doc/issues"]
     def scm = [url: "https://github.com/uberall/grails-uber-doc/"]
 
