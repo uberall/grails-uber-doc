@@ -21,6 +21,9 @@ class Pod extends AbstractObject {
     @UberDocProperty(description = "botName has a description", sampleValue = "botName has a sample value")
     String botName
 
+    @UberDocProperty()
+    Map<String, List<Persona>> persons
+
     static hasOne = [jedi: Persona]
 
     static constraints = {

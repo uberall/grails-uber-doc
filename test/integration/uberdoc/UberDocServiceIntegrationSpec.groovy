@@ -92,13 +92,13 @@ class UberDocServiceIntegrationSpec extends IntegrationSpec {
 
         m.objects
 
-        2 == m.objects.size()
-        !m.objects."Persona" // as Persona is not declared as UberDocProperty in the Pod model, and is not returned by any controller
+        3 == m.objects.size()
+        m.objects."Persona" // as Persona is not declared as UberDocProperty in the Pod model, and is not returned by any controller
         m.objects."Spaceship" // even if not directly declared in the POD, we will include the UberDocModel of SpaceShip because it is referenced as an UberDocProperty (explicit or implicit)
         3 == m.objects."Pod".size()
         "Pod" == m.objects."Pod".name
         "overriden description for model" == m.objects."Pod".description
-        8 == m.objects."Pod".properties.size()
+        9 == m.objects."Pod".properties.size()
 
         6 == m.objects."Pod".properties[0].size()
         "shared" == m.objects."Pod".properties[0].name
@@ -134,44 +134,44 @@ class UberDocServiceIntegrationSpec extends IntegrationSpec {
         "nullable" == m.objects."Pod".properties[2].constraints.last().constraint
         false == m.objects."Pod".properties[2].constraints.last().value
 
-        6 == m.objects."Pod".properties[3].size()
-        "dateCreated" == m.objects."Pod".properties[3].name
-        "Date" == m.objects."Pod".properties[3].type
-        "uberDoc.object.Pod.dateCreated.description" == m.objects."Pod".properties[3].description
-        "uberDoc.object.Pod.dateCreated.sampleValue" == m.objects."Pod".properties[3].sampleValue
-        !m.objects."Pod".properties[3].required
-
         6 == m.objects."Pod".properties[4].size()
-        "inherited" == m.objects."Pod".properties[4].name
-        "String" == m.objects."Pod".properties[4].type
-        "uberDoc.object.Pod.inherited.description" == m.objects."Pod".properties[4].description
-        "uberDoc.object.Pod.inherited.sampleValue" == m.objects."Pod".properties[4].sampleValue
+        "dateCreated" == m.objects."Pod".properties[4].name
+        "Date" == m.objects."Pod".properties[4].type
+        "uberDoc.object.Pod.dateCreated.description" == m.objects."Pod".properties[4].description
+        "uberDoc.object.Pod.dateCreated.sampleValue" == m.objects."Pod".properties[4].sampleValue
         !m.objects."Pod".properties[4].required
-        !m.objects."Pod".properties[4].isCollection
 
         6 == m.objects."Pod".properties[5].size()
-        "id" == m.objects."Pod".properties[5].name
-        "Long" == m.objects."Pod".properties[5].type
-        "uberDoc.object.Pod.id.description" == m.objects."Pod".properties[5].description
-        "uberDoc.object.Pod.id.sampleValue" == m.objects."Pod".properties[5].sampleValue
+        "inherited" == m.objects."Pod".properties[5].name
+        "String" == m.objects."Pod".properties[5].type
+        "uberDoc.object.Pod.inherited.description" == m.objects."Pod".properties[5].description
+        "uberDoc.object.Pod.inherited.sampleValue" == m.objects."Pod".properties[5].sampleValue
         !m.objects."Pod".properties[5].required
         !m.objects."Pod".properties[5].isCollection
 
         6 == m.objects."Pod".properties[6].size()
-        "longCollection" == m.objects."Pod".properties[6].name
+        "id" == m.objects."Pod".properties[6].name
         "Long" == m.objects."Pod".properties[6].type
-        "uberDoc.object.Pod.longCollection.description" == m.objects."Pod".properties[6].description
-        "uberDoc.object.Pod.longCollection.sampleValue" == m.objects."Pod".properties[6].sampleValue
+        "uberDoc.object.Pod.id.description" == m.objects."Pod".properties[6].description
+        "uberDoc.object.Pod.id.sampleValue" == m.objects."Pod".properties[6].sampleValue
         !m.objects."Pod".properties[6].required
-        m.objects."Pod".properties[6].isCollection
+        !m.objects."Pod".properties[6].isCollection
 
         6 == m.objects."Pod".properties[7].size()
-        "spaceship" == m.objects."Pod".properties[7].name
-        "Spaceship" == m.objects."Pod".properties[7].type
-        "uberDoc.object.Pod.spaceship.description" == m.objects."Pod".properties[7].description
-        "uberDoc.object.Pod.spaceship.sampleValue" == m.objects."Pod".properties[7].sampleValue
+        "longCollection" == m.objects."Pod".properties[7].name
+        "Long" == m.objects."Pod".properties[7].type
+        "uberDoc.object.Pod.longCollection.description" == m.objects."Pod".properties[7].description
+        "uberDoc.object.Pod.longCollection.sampleValue" == m.objects."Pod".properties[7].sampleValue
         !m.objects."Pod".properties[7].required
-        !m.objects."Pod".properties[7].isCollection
+        m.objects."Pod".properties[7].isCollection
+
+        6 == m.objects."Pod".properties[8].size()
+        "spaceship" == m.objects."Pod".properties[8].name
+        "Spaceship" == m.objects."Pod".properties[8].type
+        "uberDoc.object.Pod.spaceship.description" == m.objects."Pod".properties[8].description
+        "uberDoc.object.Pod.spaceship.sampleValue" == m.objects."Pod".properties[8].sampleValue
+        !m.objects."Pod".properties[8].required
+        !m.objects."Pod".properties[8].isCollection
 
         3 == m.objects."Spaceship".size()
         "Spaceship" == m.objects."Spaceship".name

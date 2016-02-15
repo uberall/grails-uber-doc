@@ -8,6 +8,7 @@ import uberdoc.messages.MessageFallback
 import uberdoc.messages.MessageReader
 
 import java.lang.reflect.Field
+import java.lang.reflect.ParameterizedType
 
 /**
  * This class holds information about classes used as request and response objects along the API.
@@ -100,8 +101,12 @@ class RequestAndResponseObjects {
      */
     private static Set<Class> propertiesToConvert(Class clazz) {
         Set<Class> toConvert = []
-        clazz.getDeclaredFields().findAll {it.isAnnotationPresent(UberDocProperty)}?.type?.each {
-            toConvert << it
+        clazz.getDeclaredFields().findAll {it.isAnnotationPresent(UberDocProperty)}?.genericType?.each {
+            if (it in ParameterizedType) {
+                toConvert.addAll(getClassesFromParameterizedType(it))
+            } else {
+                toConvert << it
+            }
         }
 
         if (clazz.getAnnotation(UberDocExplicitProperty)) {
@@ -114,6 +119,18 @@ class RequestAndResponseObjects {
             }
         }
         return toConvert
+    }
+
+    private static List<Class> getClassesFromParameterizedType(ParameterizedType type) {
+        List<Class> classes = []
+        type.actualTypeArguments.each {
+            if (it in ParameterizedType) {
+                classes.addAll(getClassesFromParameterizedType(it))
+            } else {
+                classes << it
+            }
+        }
+        return classes
     }
 
     /**
