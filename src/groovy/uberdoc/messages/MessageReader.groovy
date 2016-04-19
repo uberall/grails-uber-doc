@@ -4,6 +4,8 @@ import org.springframework.context.NoSuchMessageException
 
 class MessageReader {
 
+    private static final Object[] NO_ARGS = new Object[0]
+
     def messageSource
     Locale locale
 
@@ -13,15 +15,11 @@ class MessageReader {
     }
 
     String get(String key) {
-        String ret = null
-
         try {
-            ret = messageSource.getMessage(key, new Object[0], locale)
+            return messageSource.getMessage(key, NO_ARGS, locale)
         }
         catch (NoSuchMessageException e) {
             return key // in case we have no message, return the key to avoid exceptions and make it easier to find
         }
-
-        return ret
     }
 }

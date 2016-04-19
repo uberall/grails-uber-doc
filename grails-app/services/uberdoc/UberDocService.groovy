@@ -11,12 +11,14 @@ import uberdoc.parser.UberDocResourceParser
 import java.lang.reflect.Method
 
 /**
- * This service is responsible for parsing @UberDoc annotations available in source code and structure it as a map,
+ * Parses @UberDoc annotations available in source code and structures it as a map,
  * returned to the invoking component for proper display and rendering.
  *
  * @see RequestAndResponseObjects
  */
 class UberDocService {
+
+    static transactional = false
 
     def grailsApplication
     UrlMappings grailsUrlMappingsHolder

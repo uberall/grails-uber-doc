@@ -31,7 +31,7 @@ class MethodReader {
         formatUriStrings(mappingUri, mappingMethod)
     }
 
-    MethodReader formatUriStrings(def u, def httpMethod) {
+    MethodReader formatUriStrings(u, httpMethod) {
 
         if (u) {
             // add the URI parameters to the URI as well
@@ -59,7 +59,7 @@ class MethodReader {
         return this
     }
 
-    MethodReader useLocale(def l) {
+    MethodReader useLocale(l) {
         if (l) {
             locale = l
             messageReader = new MessageReader(messageSource, locale)
@@ -123,7 +123,7 @@ class MethodReader {
         return ret
     }
 
-    private Map parseError(def err) {
+    private Map parseError(err) {
         if (!err) {
             return [:]
         }
@@ -152,7 +152,7 @@ class MethodReader {
         return ret
     }
 
-    private Map parseHeader(def hdr) {
+    private Map parseHeader(hdr) {
         if (!hdr) {
             return [:]
         }
@@ -182,7 +182,7 @@ class MethodReader {
         return ret
     }
 
-    private Map parseUriParam(def urip) {
+    private Map parseUriParam(urip) {
         if (!urip) {
             return [:]
         }
@@ -211,7 +211,7 @@ class MethodReader {
         return ret
     }
 
-    private Map parseQueryParam(def qp) {
+    private Map parseQueryParam(qp) {
         if (!qp) {
             return [:]
         }
@@ -242,7 +242,7 @@ class MethodReader {
         return ret
     }
 
-    private Map parseBodyParam(def bp) {
+    private Map parseBodyParam(bp) {
         if (!bp) {
             return [:]
         }

@@ -3,7 +3,7 @@ package sample
 import uberdoc.annotation.UberDocProperty
 
 /**
- * Created by felipe on 22/06/15.
+ * @author felipe
  */
 abstract class AbstractObject {
 
