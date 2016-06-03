@@ -1,12 +1,16 @@
-class UberdocGrailsPlugin {
-    def version = "1.0.6"
+package uber.doc
+
+import grails.plugins.*
+
+class UberDocGrailsPlugin extends Plugin {
+
     def grailsVersion = "2.4 > *"
     def pluginExcludes = [
             "grails-app/views/**",
             "grails-app/conf/**",
             "grails-app/controllers/**",
             "grails-app/domain/**",
-            "src/groovy/sample/**",
+            "src/main/groovy/sample/**",
             "test/**"
     ]
 
@@ -27,5 +31,4 @@ For more documentation, see our GitHub repository.
     def developers = [[name: "Florian Langenhahn", email: "florian.langenhahn@uberall.com"], [name: "Florian Huebner", email: "florian@uberall.com"], [name: "Philipp Eschenbach", email: "philipp@uberall.com"]]
     def issueManagement = [system: "GitHub", url: "https://github.com/uberall/grails-uber-doc/issues"]
     def scm = [url: "https://github.com/uberall/grails-uber-doc/"]
-
 }

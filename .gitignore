@@ -26,6 +26,7 @@
 
 # "temporary" build files
 /target
+/build
 
 # config files
 .classpath
@@ -36,3 +37,6 @@
 
 # ignore backup files
 *~
+
+#gradle
+.gradle
