@@ -12,8 +12,8 @@ buildscript {
     }
 }
 
-version "2.0.0-SNAPSHOT"
-group "com.uberall"
+version "2.0.1-SNAPSHOT"
+group "com.uberall.plugins"
 
 apply plugin:"eclipse"
 apply plugin:"idea"
