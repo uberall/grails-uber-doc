@@ -10,7 +10,7 @@ import java.lang.annotation.Annotation
 import java.lang.reflect.Method
 
 /**
- * This class provides higher class methods to interact with Grails configurations and metadata.
+ * Provides higher class methods to interact with Grails configurations and metadata.
  */
 class GrailsReader {
 
@@ -26,7 +26,7 @@ class GrailsReader {
         return grailsApplication.controllerClasses.findAll { it.clazz.annotations.find { Annotation a -> a.annotationType() == UberDocController} }
     }
 
-    static List getMethodsFrom(GrailsClass controller) {
+    static List<Method> getMethodsFrom(GrailsClass controller) {
         return controller.clazz.methods.findAll { Method m -> m.annotations && m.annotations.find { Annotation a -> a.annotationType() == UberDocResource}}
     }
 

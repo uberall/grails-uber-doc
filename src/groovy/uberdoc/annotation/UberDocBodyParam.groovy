@@ -8,7 +8,7 @@ import java.lang.annotation.Target
 /**
  * Documents information about body parameters used in a POST or PATCH request.
  *
- * This can be used for requests where no complete object is availabe / needs to be sent.
+ * This can be used for requests where no complete object is available / needs to be sent.
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -30,7 +30,7 @@ import java.lang.annotation.Target
     Class type() default String
 
     /**
-     * Description of the query parameter. May include information about its usage, situations where its mandatory, etc.
+     * Description of the query parameter. May include information about its usage, situations where it's mandatory, etc.
      */
     String description() default ""
 

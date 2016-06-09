@@ -2,15 +2,12 @@ class UberdocGrailsPlugin {
     def version = "1.0.7"
     def grailsVersion = "2.4 > *"
     def pluginExcludes = [
-            "grails-app/views/**",
-            "grails-app/conf/**",
             "grails-app/controllers/**",
             "grails-app/domain/**",
-            "src/groovy/sample/**",
-            "test/**"
+            "src/groovy/sample/**"
     ]
 
-    def title = "UberDoc - Rest-API Documentation" // Headline display name of the plugin
+    def title = "UberDoc - Rest-API Documentation"
     def author = "Felipe Carvalho"
     def authorEmail = "felipe@uberall.com"
     def description = '''\
@@ -24,8 +21,11 @@ For more documentation, see our GitHub repository.
     def documentation = "https://github.com/uberall/grails-uber-doc"
     def license = "BSD"
     def organization = [name: "uberall", url: "https://uberall.com/"]
-    def developers = [[name: "Florian Langenhahn", email: "florian.langenhahn@uberall.com"], [name: "Florian Huebner", email: "florian@uberall.com"], [name: "Philipp Eschenbach", email: "philipp@uberall.com"], [name: "Alex Pedini", email: "alex.pedini@gmail.com"]]
+    def developers = [
+        [name: "Florian Langenhahn", email: "florian.langenhahn@uberall.com"],
+        [name: "Florian Huebner", email: "florian@uberall.com"],
+        [name: "Philipp Eschenbach", email: "philipp@uberall.com"],
+        [name: "Alex Pedini", email: "alex.pedini@gmail.com"]]
     def issueManagement = [system: "GitHub", url: "https://github.com/uberall/grails-uber-doc/issues"]
     def scm = [url: "https://github.com/uberall/grails-uber-doc/"]
-
 }

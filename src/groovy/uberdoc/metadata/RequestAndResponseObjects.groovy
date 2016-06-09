@@ -11,7 +11,7 @@ import java.lang.reflect.Field
 import java.lang.reflect.ParameterizedType
 
 /**
- * This class holds information about classes used as request and response objects along the API.
+ * Holds information about classes used as request and response objects along the API.
  * @see uberdoc.UberDocService
  */
 @Log4j
@@ -22,7 +22,7 @@ class RequestAndResponseObjects {
     private MessageReader messageReader
     private MessageFallback fallback
 
-    RequestAndResponseObjects(GrailsApplication g, def messageSource, Locale locale) {
+    RequestAndResponseObjects(GrailsApplication g, messageSource, Locale locale) {
         grailsApplication = g
         messageReader = new MessageReader(messageSource, locale)
         fallback = new MessageFallback(messageReader)
@@ -79,15 +79,14 @@ class RequestAndResponseObjects {
             // collect class information
             UberDocModel modelAnnotation = clazz.getAnnotation(UberDocModel)
 
-            Map clazzInfo = [:]
-            clazzInfo << [name: clazz.simpleName]
-            clazzInfo << [description: fallback.fallbackToMessageSourceIfAnnotationDoesNotOverride("uberDoc.object.${clazz.simpleName}.description", modelAnnotation.description())]
-            clazzInfo << [properties: []]
-
+            Map clazzInfo = [
+                name: clazz.simpleName,
+                description: fallback.fallbackToMessageSourceIfAnnotationDoesNotOverride("uberDoc.object.${clazz.simpleName}.description", modelAnnotation.description()),
+                properties: []]
 
             clazzInfo.properties = getDeclaredFields(clazz)
 
-            result << [(clazz.simpleName): clazzInfo]
+            result[clazz.simpleName] = clazzInfo
             convertToMap(propertiesToConvert(clazz), result)
         }
 
@@ -96,8 +95,6 @@ class RequestAndResponseObjects {
 
     /**
      * Extracts the classes of the properties that need to be converted to a map
-     * @param clazz
-     * @return
      */
     private static Set<Class> propertiesToConvert(Class clazz) {
         Set<Class> toConvert = []
@@ -162,30 +159,30 @@ class RequestAndResponseObjects {
         properties.grep()
     }
 
-    private Map getProperties(Field field, def classConstraints, String objectName) {
+    private Map getProperties(Field field, classConstraints, String objectName) {
         UberDocProperty propertyAnnotation = field.getAnnotation(UberDocProperty)
 
         // grab info from annotation
-        Map propertyMap = [:]
         def constraints = []
 
-        propertyMap << [name: field.name]
-        propertyMap << [description: fallback.fallbackToMessageSourceIfAnnotationDoesNotOverride("uberDoc.object.${objectName}.${field.name}.description", propertyAnnotation.description())]
-        propertyMap << [sampleValue: fallback.fallbackToMessageSourceIfAnnotationDoesNotOverride("uberDoc.object.${objectName}.${field.name}.sampleValue", propertyAnnotation.sampleValue())]
-        propertyMap << [required: propertyAnnotation.required()]
+        Map propertyMap = [
+            name: field.name,
+            description: fallback.fallbackToMessageSourceIfAnnotationDoesNotOverride("uberDoc.object.${objectName}.${field.name}.description", propertyAnnotation.description()),
+            sampleValue: fallback.fallbackToMessageSourceIfAnnotationDoesNotOverride("uberDoc.object.${objectName}.${field.name}.sampleValue", propertyAnnotation.sampleValue()),
+            required: propertyAnnotation.required()]
 
         // get the type, also for Sets
         log.debug("working on $objectName and ${field.name}")
         if (field.type.name.endsWith("Set") || field.type.name.endsWith("List")) {
             if (field.signature) {
-                propertyMap << [type: field.signature.split("/").last().split(";").first()]
+                propertyMap.type = field.signature.split("/").last().split(";").first()
             } else {
                 log.warn("No type defined for collection uberDoc.object.${objectName}.${field.name}")
-                propertyMap << [type: "UNDEFINED"]
+                propertyMap.type = "UNDEFINED"
             }
-            propertyMap << [isCollection: true]
+            propertyMap.isCollection = true
         } else {
-            propertyMap << [type: field.type.simpleName]
+            propertyMap.type = field.type.simpleName
         }
 
         // read constraints
@@ -201,15 +198,15 @@ class RequestAndResponseObjects {
             }
         }
 
-        propertyMap << [constraints: constraints]
+        propertyMap.constraints = constraints
 
         return propertyMap
     }
 
     private List getImplicitProperties(Class clazz) {
         def result = []
-        String customDescription = null
-        String customSampleValue = null
+        String customDescription
+        String customSampleValue
 
         UberDocExplicitProperty implicitProperty = clazz.getAnnotation(UberDocExplicitProperty)
         UberDocExplicitProperties implicitProperties = clazz.getAnnotation(UberDocExplicitProperties)

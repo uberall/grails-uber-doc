@@ -9,10 +9,9 @@ import uberdoc.annotation.UberDocError
 
 class MetadataReaderSpec extends Specification {
 
-    void "getAnnotation for PodController and annotation Error returns no instances"() {
-        given:
-        MetadataReader reader = new MetadataReader()
+    private MetadataReader reader = new MetadataReader()
 
+    void "getAnnotation for PodController and annotation Error returns no instances"() {
         when:
         def annotation = reader.getAnnotation(UberDocError).inClass(PodController.asType(GrailsClass))
 
@@ -21,9 +20,6 @@ class MetadataReaderSpec extends Specification {
     }
 
     void "getAnnotation for PodController and annotation UberDocController returns an instance"() {
-        given:
-        MetadataReader reader = new MetadataReader()
-
         when:
         def annotation = reader.getAnnotation(UberDocController).inClass(PodController.asType(GrailsClass))
 
@@ -32,14 +28,10 @@ class MetadataReaderSpec extends Specification {
     }
 
     void "getAnnotation for OtherController and annotation UberDocController returns null"() {
-        given:
-        MetadataReader reader = new MetadataReader()
-
         when:
         def annotation = reader.getAnnotation(UberDocController).inClass(OtherController.asType(GrailsClass))
 
         then:
         !annotation
     }
-
 }

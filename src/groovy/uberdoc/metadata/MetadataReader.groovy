@@ -9,9 +9,9 @@ import java.lang.reflect.Method
  */
 class MetadataReader {
 
-    private def type
+    private type
 
-    MetadataReader getAnnotation(def t) {
+    MetadataReader getAnnotation(t) {
         type = t
         return this
     }

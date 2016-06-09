@@ -8,11 +8,11 @@ class MethodReaderSpec extends Specification {
 
     MessageSource messageSourceMock
 
-    def setup() {
+    void setup() {
         messageSourceMock = Mock()
     }
 
-    def "useURI works properly"() {
+    void "useURI works properly"() {
         when:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'get'
@@ -23,7 +23,7 @@ class MethodReaderSpec extends Specification {
         'api.pods.$id.GET' == reader.uriMessageKey
     }
 
-    def "useLocale overrides default locale"() {
+    void "useLocale overrides default locale"() {
         given:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'get'
@@ -38,7 +38,7 @@ class MethodReaderSpec extends Specification {
         Locale.default != r.locale
     }
 
-    def "if no locale is set, default is used"() {
+    void "if no locale is set, default is used"() {
         when:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'get'
@@ -48,7 +48,7 @@ class MethodReaderSpec extends Specification {
         Locale.default == reader.locale
     }
 
-    def "getResourceDescription returns message for key"() {
+    void "getResourceDescription returns message for key"() {
         given:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'get'
@@ -63,7 +63,7 @@ class MethodReaderSpec extends Specification {
         1 * messageSourceMock.getMessage('uberDoc.resource.api.pods.$id.GET.description', new Object[0], Locale.default) >> "description set by message"
     }
 
-    def "getResourceDescription returns custom description"() {
+    void "getResourceDescription returns custom description"() {
         given:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'list'
@@ -77,7 +77,7 @@ class MethodReaderSpec extends Specification {
         1 * messageSourceMock.getMessage('uberDoc.resource.api.pods.GET.description', new Object[0], Locale.default) >> 'uberDoc.resource.api.pods.GET.description'
     }
 
-    def "getResourceTitle returns message for key"() {
+    void "getResourceTitle returns message for key"() {
         given:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'get'
@@ -92,7 +92,7 @@ class MethodReaderSpec extends Specification {
         1 * messageSourceMock.getMessage('uberDoc.api.pods.$id.GET.title', new Object[0], Locale.default) >> "title set by message"
     }
 
-    def "getResourceTitle returns custom title"() {
+    void "getResourceTitle returns custom title"() {
         given:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'list'
@@ -106,7 +106,7 @@ class MethodReaderSpec extends Specification {
         1 * messageSourceMock.getMessage('uberDoc.api.pods.GET.title', new Object[0], Locale.default) >> 'uberDoc.api.pods.GET.title'
     }
 
-    def "getRequestObject uses object"() {
+    void "getRequestObject uses object"() {
         when:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'create'
@@ -116,7 +116,7 @@ class MethodReaderSpec extends Specification {
         "Pod" == reader.requestObject
     }
 
-    def "getRequestObject uses requestObject"() {
+    void "getRequestObject uses requestObject"() {
         when:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'update'
@@ -126,7 +126,7 @@ class MethodReaderSpec extends Specification {
         "Pod" == reader.requestObject
     }
 
-    def "getRequestObject returns null if method has no request object"() {
+    void "getRequestObject returns null if method has no request object"() {
         when:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'list'
@@ -136,7 +136,7 @@ class MethodReaderSpec extends Specification {
         !reader.requestObject
     }
 
-    def "getRequestObject returns null if method is not annotated with @UberDocResource"() {
+    void "getRequestObject returns null if method is not annotated with @UberDocResource"() {
         when:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'delete'
@@ -146,7 +146,7 @@ class MethodReaderSpec extends Specification {
         !reader.requestObject
     }
 
-    def "getResponseObject uses object"() {
+    void "getResponseObject uses object"() {
         when:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'create'
@@ -156,7 +156,7 @@ class MethodReaderSpec extends Specification {
         "Pod" == reader.responseObject
     }
 
-    def "getResponseObject uses responseObject"() {
+    void "getResponseObject uses responseObject"() {
         when:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'list'
@@ -166,7 +166,7 @@ class MethodReaderSpec extends Specification {
         "Pod" == reader.responseObject
     }
 
-    def "getResponseObject returns null if method has no response object"() {
+    void "getResponseObject returns null if method has no response object"() {
         when:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'delete'
@@ -176,7 +176,7 @@ class MethodReaderSpec extends Specification {
         !reader.responseObject
     }
 
-    def "getResponseObject returns null if method is not annotated with @UberDocResource"() {
+    void "getResponseObject returns null if method is not annotated with @UberDocResource"() {
         when:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'foobar'
@@ -186,7 +186,7 @@ class MethodReaderSpec extends Specification {
         !reader.responseObject
     }
 
-    def "getErrors works properly"() {
+    void "getErrors works properly"() {
         given:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'get'
@@ -203,7 +203,7 @@ class MethodReaderSpec extends Specification {
         1 * messageSourceMock.getMessage('uberDoc.resource.api.pods.$id.GET.error.404.description', new Object[0], Locale.default) >> "description in message"
     }
 
-    def "getErrors works properly with custom values"() {
+    void "getErrors works properly with custom values"() {
         given:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'create'
@@ -220,7 +220,7 @@ class MethodReaderSpec extends Specification {
         1 * messageSourceMock.getMessage('uberDoc.resource.api.pods.POST.error.404.description', new Object[0], Locale.default) >> 'uberDoc.resource.api.pods.POST.error.404.description'
     }
 
-    def "getHeaders works properly"() {
+    void "getHeaders works properly"() {
         given:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'list'
@@ -236,7 +236,7 @@ class MethodReaderSpec extends Specification {
         "sampleValue in message" == headers[0].sampleValue
     }
 
-    def "getHeaders works properly with custom value"() {
+    void "getHeaders works properly with custom value"() {
         given:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'create'
@@ -254,7 +254,7 @@ class MethodReaderSpec extends Specification {
         1 * messageSourceMock.getMessage('uberDoc.resource.api.pods.POST.header.some.header.param.sampleValue', new Object[0], Locale.default) >> "uberDoc.resource.api.pods.POST.header.some.header.param.sampleValue"
     }
 
-    def "getHeaders returns nothing if method does not have the annotation"() {
+    void "getHeaders returns nothing if method does not have the annotation"() {
         when:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'delete'
@@ -264,7 +264,7 @@ class MethodReaderSpec extends Specification {
         !reader.headers
     }
 
-    def "getUriParams works properly"() {
+    void "getUriParams works properly"() {
         given:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'get'
@@ -282,7 +282,7 @@ class MethodReaderSpec extends Specification {
         "sampleValue in message" == uriParams[0].sampleValue
     }
 
-    def "getUriParams works properly with custom values"() {
+    void "getUriParams works properly with custom values"() {
         given:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'update'
@@ -302,7 +302,7 @@ class MethodReaderSpec extends Specification {
         1 * messageSourceMock.getMessage('uberDoc.resource.api.pods.$id.PATCH.uriParam.id.sampleValue', new Object[0], Locale.default) >> 'uberDoc.resource.api.pods.$id.PATCH.uriParam.id.sampleValue'
     }
 
-    def "getUriParams works properly with mixed use of annotations"() {
+    void "getUriParams works properly with mixed use of annotations"() {
         when:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'create'
@@ -314,7 +314,7 @@ class MethodReaderSpec extends Specification {
         ["firstId", "secondId", "thirdId"].containsAll(reader.uriParams.name)
     }
 
-    def "getUriParams returns nothing if method does not have the annotation"() {
+    void "getUriParams returns nothing if method does not have the annotation"() {
         when:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'list'
@@ -324,7 +324,7 @@ class MethodReaderSpec extends Specification {
         !reader.uriParams
     }
 
-    def "getQueryParams works properly"() {
+    void "getQueryParams works properly"() {
         given:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'update'
@@ -342,7 +342,7 @@ class MethodReaderSpec extends Specification {
         "sampleValue in message" == qry[0].sampleValue
     }
 
-    def "getQueryParams works properly with custom description and sample value"() {
+    void "getQueryParams works properly with custom description and sample value"() {
         given:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'list'
@@ -370,7 +370,7 @@ class MethodReaderSpec extends Specification {
         1 * messageSourceMock.getMessage('uberDoc.resource.api.pods.GET.queryParam.page.sampleValue', new Object[0], Locale.default) >> "uberDoc.resource.api.pods.GET.queryParam.page.sampleValue"
     }
 
-    def "getQueryParams works properly with mixed use of annotations"() {
+    void "getQueryParams works properly with mixed use of annotations"() {
         when:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'list'
@@ -383,7 +383,7 @@ class MethodReaderSpec extends Specification {
         [true, false].containsAll(reader.queryParams.required)
     }
 
-    def "getQueryParams returns nothing if method does not have the annotation"() {
+    void "getQueryParams returns nothing if method does not have the annotation"() {
         when:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'create'
@@ -393,7 +393,7 @@ class MethodReaderSpec extends Specification {
         !reader.queryParams
     }
 
-    def "getBodyParams works properly"() {
+    void "getBodyParams works properly"() {
         given:
         MethodReader reader = new MethodReader(PodController.methods.find {
             it.name == 'create'

@@ -27,9 +27,9 @@ class Pod extends AbstractObject {
     static hasOne = [jedi: Persona]
 
     static constraints = {
-        license blank: true, nullable: false
-        botName validator: { val, obj ->
-            if (!val) {
+        license blank: true
+        botName validator: { String botName ->
+            if (!botName) {
                 return false
             }
         }
