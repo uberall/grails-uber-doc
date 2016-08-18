@@ -6,11 +6,8 @@ class UberDocGrailsPlugin extends Plugin {
 
     def grailsVersion = "2.4 > *"
     def pluginExcludes = [
-            "grails-app/views/**",
-            "grails-app/conf/**",
-            "grails-app/controllers/**",
-            "grails-app/domain/**",
-            "src/main/groovy/sample/**",
+            '**/sample/**',
+            "**/uber/doc/Application*",
             "test/**"
     ]
 

@@ -12,7 +12,7 @@ buildscript {
     }
 }
 
-version "2.0.1-SNAPSHOT"
+version "2.0.4"
 group "com.uberall.plugins"
 
 apply plugin:"eclipse"
@@ -65,6 +65,9 @@ task wrapper(type: Wrapper) {
 }
 
 grailsPublish {
+    user = System.getenv("BINTRAY_USER") ?: project.hasProperty("bintrayUser") ? project.bintrayUser : ''
+    key = System.getenv("BINTRAY_KEY") ?: project.hasProperty("bintrayKey") ? project.bintrayKey : ''
+    userOrg = 'uberall'
     githubSlug = 'uberall/grails-uber-doc'
     license {
         name = 'Apache-2.0'
@@ -80,4 +83,9 @@ grailsPublish {
 
 assets {
     packagePlugin = true
+}
+
+jar {
+    exclude "sample/**/**"
+    exclude "uber/doc/Application*"
 }

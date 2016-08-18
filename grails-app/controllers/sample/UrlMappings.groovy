@@ -1,4 +1,4 @@
-package uberdoc
+package sample
 
 class UrlMappings {
 
