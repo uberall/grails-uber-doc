@@ -1,5 +1,5 @@
 class UberdocGrailsPlugin {
-    def version = "1.0.7"
+    def version = "1.0.8"
     def grailsVersion = "2.4 > *"
     def pluginExcludes = [
             "grails-app/controllers/**",
@@ -8,8 +8,8 @@ class UberdocGrailsPlugin {
     ]
 
     def title = "UberDoc - Rest-API Documentation"
-    def author = "Felipe Carvalho"
-    def authorEmail = "felipe@uberall.com"
+    def author = "Florian Huebner"
+    def authorEmail = "florian@uberall.com"
     def description = '''\
 uberDoc is a very simple solution for creating API documentation based on annotations in domain objects and controllers, and Grails' message system.
 

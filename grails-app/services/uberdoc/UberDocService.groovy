@@ -32,6 +32,8 @@ class UberDocService {
 
     RequestAndResponseObjects objects
 
+    Map apiInfo
+
     /**
      * Returns a Map with two root objects/information:
      *
@@ -49,7 +51,12 @@ class UberDocService {
      *
      */
     Map getApiDocs(Locale locale = Locale.default) {
-        Map apiInfo = [:]
+
+        if (apiInfo) {
+            return apiInfo
+        }
+
+        apiInfo = [:]
 
         objects = new RequestAndResponseObjects(grailsApplication, messageSource, locale)
         metadataReader = new MetadataReader()
