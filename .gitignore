@@ -1,17 +1,42 @@
-*.iml
-*.ipr
-*.iws
-*.log
-*~
-.DS_Store
-/.classpath
-/.idea
-/.project
-/.settings
-/grails-*.zip
-/grails-*.zip.sha1
+# web application files
+/web-app/WEB-INF/classes
+
+# default HSQL database files for production mode
+/prodDb.*
+
+# general HSQL database files
+*Db.properties
+*Db.script
+
+# logs
+/stacktrace.log
+/test/reports
+/logs
+
+# project release file
+/*.war
+
+# plugin release files
+/*.zip
 /plugin.xml
+
+# older plugin install locations
+/plugins
+/web-app/plugins
+
+# "temporary" build files
 /target
-/target-eclipse
-/web-app
-/.slcache
+/build
+
+# config files
+.classpath
+.project
+.idea
+*.iml
+.DS_Store
+
+# ignore backup files
+*~
+
+#gradle
+.gradle

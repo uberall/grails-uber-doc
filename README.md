@@ -13,6 +13,24 @@ So, the plugin just provides:
 
 This was done on purpose, so that your app can decide on the best way to display or cache this information.
 
+## Installation
+
+Edit build.gradle, by adding the following:
+
+```groovy
+repositories {
+    ...
+    maven { url "http://dl.bintray.com/uberall/plugins" }
+    ...
+}
+
+dependencies {
+    ...
+    compile 'org.grails.plugins:uber-doc:3.0.0'
+    ...
+}
+```
+
 ## How does it work?
 
 As previously stated, this plugin offers a Service class (UberDocService) with a public method (getApiDocs). When invoked, this method will

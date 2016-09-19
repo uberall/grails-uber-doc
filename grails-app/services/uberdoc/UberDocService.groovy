@@ -1,7 +1,7 @@
 package uberdoc
 
-import org.codehaus.groovy.grails.commons.GrailsClass
-import org.codehaus.groovy.grails.web.mapping.UrlMappings
+import grails.core.GrailsClass
+import grails.web.mapping.UrlMappings
 import uberdoc.annotation.UberDocResource
 import uberdoc.metadata.GrailsReader
 import uberdoc.metadata.MetadataReader
@@ -17,8 +17,6 @@ import java.lang.reflect.Method
  * @see RequestAndResponseObjects
  */
 class UberDocService {
-
-    static transactional = false
 
     def grailsApplication
     UrlMappings grailsUrlMappingsHolder
