@@ -10,7 +10,7 @@ class UberDocServiceIntegrationSpec extends Specification {
     def grailsUrlMappingsHolder
     def messageSource
 
-    void "apiDocs only retrieves information from controllers annotated with @UberDocController that are not deprecated on UrlMappings"() {
+    void "apiDocs retrieves information from controllers annotated with @UberDocController"() {
         given:
         UberDocService service = new UberDocService(
                 grailsApplication: grailsApplication,
@@ -24,8 +24,8 @@ class UberDocServiceIntegrationSpec extends Specification {
         m = service.apiDocs
         def somethingElse = m.resources?.find {it.method == 'POST' && it.uri == "/api/something/else"}
         def podsIdGet = m.resources?.find {it.method == 'GET' && it.uri == '/api/pods/$id'}
-        def podsPost = m.resources?.find {it.method == 'POST' && it.uri == '/api/pods'}
-        def podsGet = m.resources?.find {it.method == 'GET' && it.uri == '/api/pods'}
+        def podsPost = m.resources?.find {it.method == 'POST' && it.uri == '/api/pods/'}
+        def podsGet = m.resources?.find {it.method == 'GET' && it.uri == '/api/pods/'}
         def podsIdDelete = m.resources?.find {it.method == 'DELETE' && it.uri == '/api/pods/$id'}
         def podsIdPut = m.resources?.find {it.method == 'PUT' && it.uri == '/api/pods/$id'}
 
@@ -37,7 +37,6 @@ class UberDocServiceIntegrationSpec extends Specification {
 
         somethingElse
         "POST" == somethingElse.method
-        "/api/something/else" == somethingElse.uri
         "Pod" == somethingElse.requestObject
         "Pod" == somethingElse.responseObject
         1 == somethingElse.headers.size()
@@ -46,7 +45,6 @@ class UberDocServiceIntegrationSpec extends Specification {
 
         podsIdGet
         "GET" == podsIdGet.method
-        '/api/pods/$id' == podsIdGet.uri
         !podsIdGet.requestObject
         "Pod" == podsIdGet.responseObject
         0 == podsIdGet.headers.size()
@@ -56,7 +54,6 @@ class UberDocServiceIntegrationSpec extends Specification {
 
         podsPost
         "POST" == podsPost.method
-        "/api/pods" == podsPost.uri
         "Pod" == podsPost.requestObject
         "Pod" == podsPost.responseObject
         1 == podsPost.headers.size()
@@ -66,7 +63,6 @@ class UberDocServiceIntegrationSpec extends Specification {
 
         podsGet
         "GET" == podsGet.method
-        '/api/pods' == podsGet.uri
         !podsGet.requestObject
         "Pod" == podsGet.responseObject
         1 == podsGet.headers.size()
@@ -76,7 +72,6 @@ class UberDocServiceIntegrationSpec extends Specification {
 
         podsIdDelete
         "DELETE" == podsIdDelete.method
-        '/api/pods/$id' == podsIdDelete.uri
         !podsIdDelete.requestObject
         !podsIdDelete.responseObject
         0 == podsIdDelete.headers.size()
@@ -86,7 +81,6 @@ class UberDocServiceIntegrationSpec extends Specification {
 
         podsIdPut
         "PUT" == podsIdPut.method
-        '/api/pods/$id' == podsIdPut.uri
         "Pod" == podsIdPut.requestObject
         "Pod" == podsIdPut.responseObject
         1 == podsIdPut.headers.size()

@@ -45,12 +45,12 @@ class GrailsReader {
         mappedActions.each { action ->
             if (action.actionName in Map) {
                 for (Map.Entry entry : action.actionName.entrySet()) {
-                    if (!action.parameterValues.action?.deprecated && !(resources.find {
-                        it.method == entry.key && it.name == entry.value
-                    })) {
+                    if (!(resources.find {it.method == entry.key && it.name == entry.value })) {
                         resources << [name: entry.value, uri: action.toString(), method: entry.key]
                     }
                 }
+            } else if (action.actionName in String) {
+                resources << [name: action.actionName, uri: action.toString(), method: action.httpMethod]
             }
         }
 
