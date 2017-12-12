@@ -91,6 +91,9 @@ class UberDocService {
 
         apiInfo.objects = objects.fetch()
 
+        // Thanks to groovy we might have controller actions in here twice
+        apiInfo.resources = apiInfo.resources?.unique()
+
         return apiInfo
     }
 
