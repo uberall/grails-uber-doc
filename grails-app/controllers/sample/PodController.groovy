@@ -8,7 +8,7 @@ class PodController { // this example simulates a CRUD-ish controller
     @UberDocResource(responseObject = Pod, responseIsCollection = true)
     @UberDocError(errorCode = "NF404", httpCode = 404)
     @UberDocUriParam(name = "id")
-    def get() {}
+    def get(long id) {}
 
     @UberDocHeader(name = "hdr")
     @UberDocResource(responseObject = Pod, responseIsCollection = true, title = "custom title for list resource", description = "custom description for list resource")

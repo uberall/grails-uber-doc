@@ -19,9 +19,9 @@ class UberDocServiceIntegrationSpec extends Specification {
         )
 
         when:
-        def m = service.apiDocs
+        service.apiDocs
         // get apiDocs a second time, to get the cached version
-        m = service.apiDocs
+        def m = service.apiDocs
         def somethingElse = m.resources?.find {it.method == 'POST' && it.uri == "/api/something/else"}
         def podsIdGet = m.resources?.find {it.method == 'GET' && it.uri == '/api/pods/$id'}
         def podsPost = m.resources?.find {it.method == 'POST' && it.uri == '/api/pods/'}
