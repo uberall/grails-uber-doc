@@ -78,5 +78,5 @@ grailsPublish {
     developers = ["Florian Langenhahn": "florian.langenhahn@uberall.com",
                   "Florian Huebner"   : "florian@uberall.com",
                   "Philipp Eschenbach": "philipp@uberall.com",
-                  "Alex Pedini"       : "alex.pedini@gmail.com"]
+                  "Steffen Zels"      : "steffen@uberall.com"]
 }
