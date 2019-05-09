@@ -260,7 +260,7 @@ class MethodReader {
         List<String> uriParamNames = []
 
         if (reader.getAnnotation(UberDocUriParams).inMethod(method)){
-            uriParamNames << reader.getAnnotation(UberDocUriParams).inMethod(method).value().collect { it.name() }
+            uriParamNames.addAll(reader.getAnnotation(UberDocUriParams).inMethod(method).value().collect { it.name() })
         }
 
         if (reader.getAnnotation(UberDocUriParam).inMethod(method)){
