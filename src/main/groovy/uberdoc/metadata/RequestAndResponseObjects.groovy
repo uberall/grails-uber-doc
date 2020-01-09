@@ -3,6 +3,7 @@ package uberdoc.metadata
 import grails.core.GrailsApplication
 import grails.core.GrailsDomainClass
 import groovy.util.logging.Log4j
+import uberdoc.Utils
 import uberdoc.annotation.*
 import uberdoc.messages.MessageFallback
 import uberdoc.messages.MessageReader
@@ -21,11 +22,13 @@ class RequestAndResponseObjects {
     private GrailsApplication grailsApplication
     private MessageReader messageReader
     private MessageFallback fallback
+    Utils utils
 
     RequestAndResponseObjects(GrailsApplication g, messageSource, Locale locale) {
         grailsApplication = g
         messageReader = new MessageReader(messageSource, locale)
         fallback = new MessageFallback(messageReader)
+        this.utils = new Utils(grailsApplication)
     }
 
     void extractObjectsInfoFromResource(UberDocResource uberDocResource) {
@@ -161,6 +164,10 @@ class RequestAndResponseObjects {
 
     private Map getProperties(Field field, classConstraints, String objectName) {
         UberDocProperty propertyAnnotation = field.getAnnotation(UberDocProperty)
+
+        if (!utils.shouldPublish(propertyAnnotation)) {
+            return [:]
+        }
 
         // grab info from annotation
         def constraints = []

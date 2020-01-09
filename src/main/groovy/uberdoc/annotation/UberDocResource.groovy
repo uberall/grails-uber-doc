@@ -50,4 +50,9 @@ import java.lang.annotation.Target
      */
     Class object() default {} // if requestObject and responseObject are the same, just use this attribute as a shortcut
 
+    /**
+     * Flag indicating that the resource is for internal use only (documentation should not be published to the public docs)
+     */
+    boolean internalOnly() default false
+
 }

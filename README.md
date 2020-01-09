@@ -65,7 +65,7 @@ This plugin offers basically a set of annotations, along with plural variations 
 ##### @UberDocController:
 Identifies a controller that defines API resources that should be documented.
 ##### @UberDocResource:
-Identifies a controller method (aka resource) to be documented. Within an `UberDocController`, if a given method on a controller is not meant to have its documentation made available, just don't annotate it. Parameters are `requestObject`, `responseObject`, `requestIsCollection`, and `responseIsCollection`.
+Identifies a controller method (aka resource) to be documented. Within an `UberDocController`. Parameters are `requestObject`, `responseObject`, `requestIsCollection`, and `responseIsCollection`.
 ##### @UberDocError(s):
 Provides information about errors a resource can signal to the user. Parameters are `httpCode` and `errorCode`.
 ##### @UberDocHeader(s):
@@ -123,7 +123,6 @@ Example json:
    ]
 }
 ```
-
 
 ## Example usages
 
@@ -442,6 +441,17 @@ For example, if you run the integration test provided with the plugin, `UberDocS
     }
 }
 ```
+
+##### Internal Only documentation:
+In order to provide internal only documentation, `internalOnly` is supported by the following annotations:
+- @UberDocController
+- @UberDocModel
+- @UberDocProperty
+- @UberDocResource
+
+Example: `@UberDocController(internalOnly = true)`
+
+Internal only documentation can be published by setting `uberdoc.publishInternalOnly` to `true` inside application.yml or application.groovy.
 
 
 ###### Made with <3 in Berlin

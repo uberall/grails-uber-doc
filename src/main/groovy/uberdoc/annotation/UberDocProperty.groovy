@@ -28,4 +28,9 @@ import java.lang.annotation.Target
      * Defines whether the property is mandatory.
      */
     boolean required() default false
+
+    /**
+     * Flag indicating that the controller is for internal use only (documentation should not be published to the public docs)
+     */
+    boolean internalOnly() default false
 }

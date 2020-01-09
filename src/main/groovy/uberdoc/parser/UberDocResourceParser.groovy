@@ -32,6 +32,7 @@ class UberDocResourceParser {
          bodyParams        : methodReader.bodyParams,
          headers           : methodReader.headers,
          errors            : methodReader.errors,
-         examples          : methodReader.examples]
+         examples          : methodReader.examples,
+         internalOnly      : methodReader.isInternalOnly()]
     }
 }

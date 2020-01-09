@@ -18,6 +18,10 @@ spring:
             check-template-location: false
 
 ---
+
+uberdoc:
+    publishInternalOnly: false
+
 grails:
     mime:
         disable:

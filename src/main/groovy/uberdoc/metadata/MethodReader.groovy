@@ -107,6 +107,11 @@ class MethodReader {
         return (uberDocResource?.requestIsCollection())
     }
 
+    boolean isInternalOnly() {
+        UberDocResource uberDocResource = reader.getAnnotation(UberDocResource).inMethod(method)
+        return (uberDocResource?.internalOnly())
+    }
+
     List<Map> getErrors() {
         def ret = []
         def methodErrors = reader.getAnnotation(UberDocErrors).inMethod(method)

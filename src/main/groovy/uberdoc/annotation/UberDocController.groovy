@@ -13,5 +13,8 @@ import java.lang.annotation.Target
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @interface UberDocController {
-
+    /**
+     * Flag indicating that the controller is for internal use only (documentation should not be published to the public docs)
+     */
+    boolean internalOnly() default false
 }

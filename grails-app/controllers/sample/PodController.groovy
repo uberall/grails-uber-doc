@@ -44,4 +44,7 @@ class PodController { // this example simulates a CRUD-ish controller
 
     @UberDocHeader(name = "never_reached")
     def foobar() {}
+
+    @UberDocResource(internalOnly = true)
+    def internalMethod() {}
 }
