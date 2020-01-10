@@ -1,5 +1,7 @@
 package uberdoc.metadata
 
+import groovy.json.JsonException
+import groovy.json.JsonSlurper
 import uberdoc.annotation.*
 import uberdoc.messages.MessageFallback
 import uberdoc.messages.MessageReader
@@ -121,6 +123,17 @@ class MethodReader {
         }
 
         return ret
+    }
+
+    Object getExamples() {
+        UberDocExample examples = reader.getAnnotation(UberDocExample).inMethod(method) as UberDocExample
+
+        if (!examples || !examples.file()) {
+            return null
+        }
+
+        JsonSlurper jsonSlurper = new JsonSlurper()
+        return jsonSlurper.parse(this.class.classLoader.getResource(examples.file()) as URL)
     }
 
     private Map parseError(err) {

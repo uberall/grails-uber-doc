@@ -87,6 +87,43 @@ Again, resources descriptions will be retrieved from regular message bundles, us
 
 Just annotate the proper classes / methods, inject UberDocService and play around with getApiDocs. All of the rest (caching, UI) can be implemented in the way that fits you best :)
 
+##### @UberDocExample:
+Attaches examples from a json file to the method.
+
+Usage: 
+
+```
+@UberDocExample(file = <filename>)
+```
+where `filename` is the name of a json file under the `resources` directory.`
+
+Example json:
+
+```
+{
+   "examples":
+   [
+      {
+         "name": "Some example",
+         "query_params": {
+            "lang": "en",
+            "version": "20181010"
+         },
+         "body": {
+            "businessId": 123,
+            "locationId": 456
+         },
+         "response": {
+            "statusCode": 200,
+            "output": {
+               "message": "Example message"
+            }
+         }
+      }
+   ]
+}
+```
+
 
 ## Example usages
 

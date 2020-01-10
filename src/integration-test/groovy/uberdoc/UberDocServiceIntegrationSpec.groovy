@@ -42,6 +42,26 @@ class UberDocServiceIntegrationSpec extends Specification {
         1 == somethingElse.headers.size()
         0 == somethingElse.queryParams.size()
         3 == somethingElse.uriParams.size()
+        somethingElse.examples as String == [
+                examples: [
+                        [
+                                body        : [
+                                        businessId: 123,
+                                        locationId: 456],
+                                name        : "Some example",
+                                query_params: [
+                                        lang   : "en",
+                                        version: 20181010
+                                ],
+                                response    : [
+                                        output    : [
+                                                message: "Example message"
+                                        ],
+                                        statusCode: 200
+                                ]
+                        ]
+                ]
+        ] as String
 
         podsIdGet
         "GET" == podsIdGet.method

@@ -29,6 +29,7 @@ class ApiSomethingElseController {
             @UberDocUriParam(name = "secondId")
     ])
     @UberDocUriParam(name = "thirdId")
+    @UberDocExample(file = "ApiSomethingElseController_create.json")
     def create() {}
 
     @UberDocResource(object = Pod)

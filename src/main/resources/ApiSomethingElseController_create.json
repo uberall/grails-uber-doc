@@ -1,0 +1,22 @@
+{
+   "examples":
+   [
+      {
+         "name": "Some example",
+         "query_params": {
+            "lang": "en",
+            "version": "20181010"
+         },
+         "body": {
+            "businessId": 123,
+            "locationId": 456
+         },
+         "response": {
+            "statusCode": 200,
+            "output": {
+               "message": "Example message"
+            }
+         }
+      }
+   ]
+}
