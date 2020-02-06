@@ -31,6 +31,7 @@ class UberDocResourceParser {
          queryParams       : methodReader.queryParams,
          bodyParams        : methodReader.bodyParams,
          headers           : methodReader.headers,
-         errors            : methodReader.errors]
+         errors            : methodReader.errors,
+         examples          : methodReader.examples]
     }
 }
