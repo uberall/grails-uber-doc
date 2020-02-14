@@ -1,12 +1,13 @@
 package uberdoc
 
+import grails.core.GrailsApplication
 import grails.test.mixin.integration.Integration
 import spock.lang.Specification
 
 @Integration
 class UberDocServiceIntegrationSpec extends Specification {
 
-    def grailsApplication
+    GrailsApplication grailsApplication
     def grailsUrlMappingsHolder
     def messageSource
 
@@ -202,5 +203,86 @@ class UberDocServiceIntegrationSpec extends Specification {
         "uberDoc.object.Spaceship.dateCreated.description" == m.objects."Spaceship".properties[0].description
         "uberDoc.object.Spaceship.dateCreated.sampleValue" == m.objects."Spaceship".properties[0].sampleValue
         !m.objects."Spaceship".properties[0].required
+    }
+
+    void "internalOnly controllers and their methods only get published if uberdoc.publishInternalOnly is true"() {
+        given:
+        grailsApplication.config.uberdoc.setAt('publishInternalOnly', publish)
+
+        UberDocService service = new UberDocService(
+                grailsApplication: grailsApplication,
+                grailsUrlMappingsHolder: grailsUrlMappingsHolder,
+                messageSource: messageSource
+        )
+
+        when:
+        def m = service.apiDocs
+
+        then:
+        m.resources.any {it.method == 'GET' && it.uri == '/api/internal/$id'} == publish
+        m.resources.any {it.method == 'GET' && it.uri == '/api/internal/'} == publish
+
+        where:
+        publish << [true, false]
+    }
+
+    void "internalOnly methods only get published if uberdoc.publishInternalOnly is true"() {
+        given:
+        grailsApplication.config.uberdoc.setAt('publishInternalOnly', publish)
+
+        UberDocService service = new UberDocService(
+                grailsApplication: grailsApplication,
+                grailsUrlMappingsHolder: grailsUrlMappingsHolder,
+                messageSource: messageSource
+        )
+
+        when:
+        def m = service.apiDocs
+
+        then:
+        m.resources?.any {it.method == 'GET' && it.uri == '/api/pods/internal'} == publish
+
+        where:
+        publish << [true, false]
+    }
+
+    void "internalOnly models only get published if uberdoc.publishInternalOnly is true"() {
+        given:
+        grailsApplication.config.uberdoc.setAt('publishInternalOnly', publish)
+
+        UberDocService service = new UberDocService(
+                grailsApplication: grailsApplication,
+                grailsUrlMappingsHolder: grailsUrlMappingsHolder,
+                messageSource: messageSource
+        )
+
+        when:
+        def m = service.apiDocs
+
+        then:
+        m.objects.any {it.key == "Internal"} == publish
+
+        where:
+        publish << [true, false]
+    }
+
+    void "internalOnly properties only get published if uberdoc.publishInternalOnly is true"() {
+        given:
+        grailsApplication.config.uberdoc.setAt('publishInternalOnly', publish)
+
+        UberDocService service = new UberDocService(
+                grailsApplication: grailsApplication,
+                grailsUrlMappingsHolder: grailsUrlMappingsHolder,
+                messageSource: messageSource
+        )
+
+        when:
+        def m = service.apiDocs
+
+        then:
+        m.objects.Persona.properties.any { it.name == "internalField" } == publish
+
+        where:
+        publish << [true, false]
     }
 }

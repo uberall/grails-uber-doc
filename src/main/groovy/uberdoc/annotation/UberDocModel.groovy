@@ -19,4 +19,9 @@ import java.lang.annotation.Target
      */
     String description() default ""
 
+    /**
+     * Flag indicating that the model is for internal use only (documentation should not be published to the public docs)
+     */
+    boolean internalOnly() default false
+
 }

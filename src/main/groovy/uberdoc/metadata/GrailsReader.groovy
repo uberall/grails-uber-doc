@@ -3,6 +3,7 @@ package uberdoc.metadata
 import grails.core.GrailsClass
 import grails.util.GrailsNameUtils
 import grails.web.mapping.UrlMappings
+import uberdoc.Utils
 import uberdoc.annotation.UberDocController
 import uberdoc.annotation.UberDocResource
 
@@ -16,18 +17,28 @@ class GrailsReader {
 
     def grailsApplication
     UrlMappings grailsUrlMappingsHolder
+    Utils utils
 
     GrailsReader(grailsApplication, UrlMappings grailsUrlMappingsHolder) {
         this.grailsApplication = grailsApplication
         this.grailsUrlMappingsHolder = grailsUrlMappingsHolder
+        this.utils = new Utils(grailsApplication)
     }
 
     GrailsClass[] getControllers() {
-        return grailsApplication.controllerClasses.findAll { it.clazz.annotations.find { Annotation a -> a.annotationType() == UberDocController} }
+        return grailsApplication.controllerClasses.findAll {
+            it.clazz.annotations.find { Annotation a ->
+                a.annotationType() == UberDocController && utils.shouldPublish(a)
+            }
+        }
     }
 
-    static List<Method> getMethodsFrom(GrailsClass controller) {
-        return controller.clazz.methods.findAll { Method m -> m.annotations && m.annotations.find { Annotation a -> a.annotationType() == UberDocResource}}
+    List<Method> getMethodsFrom(GrailsClass controller) {
+        return utils.shouldPublish(controller.clazz.getAnnotation(UberDocController)) ? controller.clazz.methods.findAll { Method m ->
+            m.annotations && m.annotations.find { Annotation a ->
+                a.annotationType() == UberDocResource && utils.shouldPublish(a)
+            }
+        } : []
     }
 
     List extractUrlMappingsFor(GrailsClass controller) {

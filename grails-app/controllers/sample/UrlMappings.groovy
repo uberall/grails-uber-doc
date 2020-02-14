@@ -8,10 +8,16 @@ class UrlMappings {
             group("/pods") {
                 "/"(controller: 'pod', action: 'list', method: 'GET')
                 "/"(controller: 'pod', action: 'create', method: 'POST')
+                "/internal"(controller: 'pod', action: 'internalMethod', method: 'GET')
                 "/$id"(controller: 'pod', action: 'get', method: 'GET')
                 "/$id"(controller: 'pod', action: 'update', method: 'PATCH')
                 "/$id"(controller: 'pod', action: 'update', method: 'PUT')
                 "/$id"(controller: 'pod', action: 'delete', method: 'DELETE')
+            }
+
+            group("/internal") {
+                "/"(controller: 'internal', action: 'list', method: 'GET')
+                "/$id"(controller: 'internal', action: 'get', method: 'GET')
             }
         }
 
