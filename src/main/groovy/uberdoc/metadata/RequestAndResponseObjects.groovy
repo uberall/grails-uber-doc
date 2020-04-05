@@ -197,7 +197,8 @@ class RequestAndResponseObjects {
             classConstraints.entrySet().findAll { it.key == field.name }.each { constrainedProperty ->
                 constrainedProperty.value.appliedConstraints.each { hibernateConstraint ->
                     if (hibernateConstraint.name != "validator") {
-                        constraints << [constraint: hibernateConstraint.name, value: hibernateConstraint.constraintParameter]
+                        def constraintParameter = hibernateConstraint.hasProperty('constraint') ? hibernateConstraint.constraint.constraintParameter : hibernateConstraint.constraintParameter
+                        constraints << [constraint: hibernateConstraint.name, value: constraintParameter]
                     } else {
                         constraints << [constraint: "custom", value: "uberDoc.object.${objectName}.constraints.custom"]
                     }
