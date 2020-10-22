@@ -1,7 +1,7 @@
 package uberdoc.metadata
 
-import groovy.json.JsonException
 import groovy.json.JsonSlurper
+import org.springframework.context.MessageSource
 import uberdoc.annotation.*
 import uberdoc.messages.MessageFallback
 import uberdoc.messages.MessageReader
@@ -11,22 +11,22 @@ import uberdoc.messages.MessageReader
  */
 class MethodReader {
 
-    def method
-    def messageSource
-    String uri
-    String uriMessageKey
-    MetadataReader reader
-    Locale locale
-    MessageReader messageReader
     MessageFallback fallback
     String httpMethod
+    Locale locale
+    def method
+    MessageReader messageReader
+    MessageSource messageSource
+    MetadataReader reader
+    String uri
+    String uriMessageKey
 
-    MethodReader(m, ms, mappingUri, mappingMethod) {
+    MethodReader(m, ms, mappingUri, mappingMethod, Locale locale = Locale.default) {
         reader = new MetadataReader()
         method = m
         messageSource = ms
 
-        locale = Locale.default
+        this.locale = locale
         messageReader = new MessageReader(messageSource, locale)
         fallback = new MessageFallback(messageReader)
 
@@ -146,8 +146,8 @@ class MethodReader {
             return [:]
         }
         return [
-                errorCode: err.errorCode(),
-                httpCode: err.httpCode(),
+                errorCode  : err.errorCode(),
+                httpCode   : err.httpCode(),
                 description: fallbackToMessageSourceIfAnnotationDoesNotOverride("uberDoc.resource.${uriMessageKey}.error.${err.httpCode()}.description", err.description())
         ]
     }
@@ -175,10 +175,10 @@ class MethodReader {
             return [:]
         }
         return [
-                name: hdr.name(),
+                name       : hdr.name(),
                 description: fallbackToMessageSourceIfAnnotationDoesNotOverride("uberDoc.resource.${uriMessageKey}.header.${hdr.name()}.description", hdr.description()),
                 sampleValue: fallbackToMessageSourceIfAnnotationDoesNotOverride("uberDoc.resource.${uriMessageKey}.header.${hdr.name()}.sampleValue", hdr.sampleValue()),
-                required: hdr.required()
+                required   : hdr.required()
         ]
     }
 
@@ -205,7 +205,7 @@ class MethodReader {
             return [:]
         }
         return [
-                name: urip.name(),
+                name       : urip.name(),
                 description: fallbackToMessageSourceIfAnnotationDoesNotOverride("uberDoc.resource.${uriMessageKey}.uriParam.${urip.name()}.description", urip.description()),
                 sampleValue: fallbackToMessageSourceIfAnnotationDoesNotOverride("uberDoc.resource.${uriMessageKey}.uriParam.${urip.name()}.sampleValue", urip.sampleValue())
         ]
@@ -277,15 +277,15 @@ class MethodReader {
     private void replaceUriParams() {
         List<String> uriParamNames = []
 
-        if (reader.getAnnotation(UberDocUriParams).inMethod(method)){
+        if (reader.getAnnotation(UberDocUriParams).inMethod(method)) {
             uriParamNames.addAll(reader.getAnnotation(UberDocUriParams).inMethod(method).value().collect { it.name() })
         }
 
-        if (reader.getAnnotation(UberDocUriParam).inMethod(method)){
+        if (reader.getAnnotation(UberDocUriParam).inMethod(method)) {
             uriParamNames.add(reader.getAnnotation(UberDocUriParam).inMethod(method).name())
         }
 
-        if (uriParamNames.size() == 0){
+        if (uriParamNames.size() == 0) {
             return
         }
 
@@ -294,7 +294,7 @@ class MethodReader {
         }
     }
 
-    private String fallbackToMessageSourceIfAnnotationDoesNotOverride(String messageKey, String annotatedValue){
+    private String fallbackToMessageSourceIfAnnotationDoesNotOverride(String messageKey, String annotatedValue) {
         return fallback.fallbackToMessageSourceIfAnnotationDoesNotOverride(messageKey, annotatedValue)
     }
 }

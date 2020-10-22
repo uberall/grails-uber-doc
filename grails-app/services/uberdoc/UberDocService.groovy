@@ -1,7 +1,10 @@
 package uberdoc
 
+import grails.core.GrailsApplication
 import grails.core.GrailsClass
 import grails.web.mapping.UrlMappings
+import groovy.util.logging.Log4j
+import org.springframework.context.MessageSource
 import uberdoc.annotation.UberDocResource
 import uberdoc.metadata.GrailsReader
 import uberdoc.metadata.MetadataReader
@@ -16,21 +19,12 @@ import java.lang.reflect.Method
  *
  * @see RequestAndResponseObjects
  */
+@Log4j
 class UberDocService {
 
-    def grailsApplication
+    GrailsApplication grailsApplication
     UrlMappings grailsUrlMappingsHolder
-    def messageSource
-
-    List controllerMethods
-    List controllerMappings
-
-    MetadataReader metadataReader
-    GrailsReader grailsReader
-
-    RequestAndResponseObjects objects
-
-    Map apiInfo
+    MessageSource messageSource
 
     /**
      * Returns a Map with two root objects/information:
@@ -38,7 +32,7 @@ class UberDocService {
      * 1- resources: contain structured information about all resources, using UrlMappings information as base. The basic idea is to:
      * * go through every controller;
      * * for each controller:
-     * ** retrieve url mappings associated with that controller (e.g.: "/api/phods"(controller: 'phod', action: [POST: "create"]))
+     * ** retrieve url mappings associated with that controller (e.g.: "/api/pods"(controller: 'pod', action: [POST: "create"]))
      * ** retrieve all methods available in that controller (e.g.: create, get, list)
      * ** for each method combine:
      * (i) the API information available in the annotations applied to that annotation (specific headers, specific errors, request objects),
@@ -48,32 +42,25 @@ class UberDocService {
      * 2- objects: contains information about all objects used either as request or response objects by all controllers
      *
      */
-    Map getApiDocs(Locale locale = Locale.default) {
+    ApiDocumentation getApiDocs(Locale locale = Locale.default) {
+        RequestAndResponseObjects objects = new RequestAndResponseObjects(grailsApplication, messageSource, locale)
+        MetadataReader metadataReader = new MetadataReader()
+        GrailsReader grailsReader = new GrailsReader(grailsApplication, grailsUrlMappingsHolder)
 
-        if (apiInfo) {
-            return apiInfo
-        }
-
-        apiInfo = [:]
-
-        objects = new RequestAndResponseObjects(grailsApplication, messageSource, locale)
-        metadataReader = new MetadataReader()
-        grailsReader = new GrailsReader(grailsApplication, grailsUrlMappingsHolder)
-
-        apiInfo.resources = []
-        apiInfo.objects = [:]
+        List apiResources = []
+        Map apiObjects
 
         for (GrailsClass controller : grailsReader.controllers) {
 
-            def parser = new UberDocResourceParser(messageSource)
+            UberDocResourceParser parser = new UberDocResourceParser(messageSource, locale)
 
             // go over all controllers with uberDoc annotations
-            controllerMethods = grailsReader.getMethodsFrom(controller)
-            controllerMappings = grailsReader.extractUrlMappingsFor(controller)
+            List controllerMethods = grailsReader.getMethodsFrom(controller)
+            List<LinkedHashMap> controllerMappings = grailsReader.extractUrlMappingsFor(controller)
 
             controllerMethods.each { Method method ->
                 // match method and mapping
-                def mapping = controllerMappings.find { it.name == method.name }
+                LinkedHashMap mapping = controllerMappings.find { it.name == method.name }
 
                 // if there is no mapping, there's no point int extracting resources
                 if (!mapping) {
@@ -82,19 +69,19 @@ class UberDocService {
                 }
 
                 // parse the methods annotations for details about the api resource
-                apiInfo.resources.addAll(parser.parse(method, mapping))
+                apiResources.addAll(parser.parse(method, mapping))
 
                 // find all request and response objects that are used for this api method, add them to the list of available objects
                 objects.extractObjectsInfoFromResource(metadataReader.getAnnotation(UberDocResource).inMethod(method))
             }
         }
 
-        apiInfo.objects = objects.fetch()
+        apiObjects = objects.fetch()
 
         // Thanks to groovy we might have controller actions in here twice
-        apiInfo.resources = apiInfo.resources?.unique()
+        apiResources = apiResources?.unique()
 
-        return apiInfo
+        return new ApiDocumentation(apiObjects, apiResources)
     }
 
 }
