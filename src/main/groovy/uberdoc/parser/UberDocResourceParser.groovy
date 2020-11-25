@@ -1,5 +1,6 @@
 package uberdoc.parser
 
+import org.springframework.context.MessageSource
 import uberdoc.metadata.MethodReader
 
 /**
@@ -8,15 +9,17 @@ import uberdoc.metadata.MethodReader
  */
 class UberDocResourceParser {
 
+    Locale locale
     MethodReader methodReader
-    def messageSource
+    MessageSource messageSource
 
-    UberDocResourceParser(ms) {
+    UberDocResourceParser(MessageSource ms, Locale locale = Locale.default) {
         messageSource = ms
+        this.locale = locale
     }
 
     Map parse(controllerMethod, mapping) {
-        methodReader = new MethodReader(controllerMethod, messageSource, mapping.uri, mapping.method)
+        methodReader = new MethodReader(controllerMethod, messageSource, mapping.uri, mapping.method, locale)
 
         [baseMessageKey    : methodReader.baseMessageKey,
          title             : methodReader.resourceTitle,
