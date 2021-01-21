@@ -30,7 +30,7 @@ repositories {
 
 dependencies {
     ...
-    compile 'org.grails.plugins:uber-doc:3.2'
+    compile 'org.grails.plugins:uber-doc:4.0.0'
     ...
 }
 ```
