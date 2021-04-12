@@ -19,6 +19,7 @@ apply plugin: "idea"
 apply plugin: "org.grails.grails-plugin"
 apply plugin: "org.grails.grails-plugin-publish"
 apply plugin: "org.grails.grails-gsp"
+apply plugin: "maven-publish"
 
 jar {
     exclude "sample/**/**"
@@ -62,22 +63,15 @@ task wrapper(type: Wrapper) {
     gradleVersion = gradleWrapperVersion
 }
 
-grailsPublish {
-    user = System.getenv("BINTRAY_USER") ?: project.hasProperty("bintrayUser") ? project.bintrayUser : ''
-    key = System.getenv("BINTRAY_KEY") ?: project.hasProperty("bintrayKey") ? project.bintrayKey : ''
-    userOrg = 'uberall'
-    githubSlug = 'uberall/grails-uber-doc'
-    license {
-        name = 'BSD'
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/uberall/grails-uber-doc")
+            credentials {
+                username = System.getenv("GITHUB_USER") ?: project.findProperty("gpr.user")
+                password = System.getenv("GITHUB_TOKEN") ?: project.findProperty("gpr.key")
+            }
+        }
     }
-    title = "UberDoc - Rest-API Documentation"
-    desc = '''\
-            uberDoc is a very simple solution for creating API documentation based on annotations in domain objects and controllers, and Grails' message system.
-            It goes through controllers, finds resources, fetches all used objects, and extracts all parameters, headers, errors, etc.
-            For more documentation, see our GitHub repository.
-            '''
-    developers = ["Florian Langenhahn": "florian.langenhahn@uberall.com",
-                  "Florian Huebner"   : "florian@uberall.com",
-                  "Philipp Eschenbach": "philipp@uberall.com",
-                  "Steffen Zels"      : "steffen@uberall.com"]
 }
