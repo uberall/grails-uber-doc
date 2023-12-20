@@ -3,7 +3,8 @@ package uberdoc
 import grails.core.GrailsApplication
 import grails.core.GrailsClass
 import grails.web.mapping.UrlMappings
-import groovy.util.logging.Log4j
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.context.MessageSource
 import uberdoc.annotation.UberDocResource
 import uberdoc.metadata.GrailsReader
@@ -19,8 +20,10 @@ import java.lang.reflect.Method
  *
  * @see RequestAndResponseObjects
  */
-@Log4j
 class UberDocService {
+
+    static final Logger log = LoggerFactory.getLogger(UberDocService)
+
 
     GrailsApplication grailsApplication
     UrlMappings grailsUrlMappingsHolder

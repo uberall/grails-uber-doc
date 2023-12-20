@@ -11,7 +11,7 @@ buildscript {
     }
 }
 
-version "4.0.0"
+version "4.0.1"
 group "org.grails.plugins"
 
 apply plugin: "eclipse"
@@ -51,6 +51,8 @@ dependencies {
     compile "org.grails:grails-core"
     compile "org.grails:grails-dependencies"
     compile "org.grails:grails-web-boot"
+    compile "ch.qos.logback:logback-classic:1.2.3"
+    compile "org.slf4j:slf4j-api:1.7.32"
     console "org.grails:grails-console"
     profile "org.grails.profiles:web-plugin:3.1.8"
     provided "org.grails:grails-plugin-services"

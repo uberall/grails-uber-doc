@@ -2,7 +2,8 @@ package uberdoc.metadata
 
 import grails.core.GrailsApplication
 import grails.core.GrailsDomainClass
-import groovy.util.logging.Log4j
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import uberdoc.Utils
 import uberdoc.annotation.*
 import uberdoc.messages.MessageFallback
@@ -15,8 +16,9 @@ import java.lang.reflect.ParameterizedType
  * Holds information about classes used as request and response objects along the API.
  * @see uberdoc.UberDocService
  */
-@Log4j
 class RequestAndResponseObjects {
+
+    static final Logger log = LoggerFactory.getLogger(RequestAndResponseObjects)
 
     private Set requestAndResponseClasses = []
     private GrailsApplication grailsApplication
